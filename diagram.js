@@ -99,12 +99,13 @@ onload = function() {
 function init() {
     ctx.beginPath();
     
-    /* ?㉺?̐・*/
+    /* 横線 */
     ctx.moveTo(-offset, 20);
     ctx.lineTo(1440*expansion-offset, 20);
     ctx.moveTo(-offset, 380);
     ctx.lineTo(1440*expansion-offset, 380);
     
+    /* 大目盛 */
     for(var i = 0; i <= 1440; i+=60){
         ctx.moveTo(i*expansion-offset, 10);
         ctx.lineTo(i*expansion-offset, 30);
@@ -112,6 +113,7 @@ function init() {
         ctx.lineTo(i*expansion-offset, 390);
     }
     
+    /* 小目盛 */
     for(var i = 0; i <= 1440; i+=10){
         ctx.moveTo(i*expansion-offset, 15);
         ctx.lineTo(i*expansion-offset, 25);
@@ -119,6 +121,7 @@ function init() {
         ctx.lineTo(i*expansion-offset, 385);
     }
     
+    /* 時間 */
     ctx.textAlign = "center";
     for(var i = 0; i<=24; i++){
         ctx.fillText(i, i*60*expansion-offset, 8);
