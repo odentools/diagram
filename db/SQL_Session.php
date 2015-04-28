@@ -92,6 +92,23 @@ class	SQL_Session{
 		return $result;
 
 	}
+	
+	// ダイアテーブル削除専用
+	function	BDiaTDelete($id) {
+		
+		$query = "delete from DiaT where DiaGroupT_ID_=?";
+		
+		$stmt = $this->mysqli->prepare($query);
+		
+		$stmt->bind_param('i', $id);
+
+		// プリペアドステートメントを実行します
+		$stmt->execute();
+
+		// ステートメントと接続を閉じます
+		$stmt->close();
+
+	}
 
 	/**
 	 * @fn

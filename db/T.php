@@ -57,6 +57,10 @@ if(CheckPostParameter($P_Parm)) {
 
 	}
 	
+	// ダイアテーブル削除
+	$mysqli->BDiaTDelete($DiaGroupT_id);
+	
+	// ダイアテーブル更新
 	foreach((array)$P_Data["DiaT"] as $key => $val) {
 
 		$mysqli->NewRecordAutoID("DiaT", $P_Parm["DiaT"], array_merge($val, array("DiaGroupT_ID_"=>$DiaGroupT_id)));
