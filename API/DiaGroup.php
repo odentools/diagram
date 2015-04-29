@@ -9,7 +9,7 @@ include_once("../db/SQL_Session.php");
 
 $mysqli = new SQL_Session();
 
- if(isset($_GET["RouteListT_ID_"])) {
+if(isset($_GET["RouteListT_ID_"])) {
 
 	$BPrm = array(0=>$_GET["RouteListT_ID_"]);
 	
@@ -37,6 +37,7 @@ $mysqli = new SQL_Session();
 
 }
 
+is_null($result)?$result=array(array("message"=>"Error: Not found","code"=>"404")):'';
 echo json_encode($result, JSON_UNESCAPED_UNICODE );
 
 ?>

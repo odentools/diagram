@@ -34,6 +34,7 @@ if(!isset($_GET["id"]) || $_GET["id"] === '') {
 
 }
 
+is_null($result)?$result=array(array("message"=>"Error: Not found","code"=>"404")):'';
 echo json_encode($result, JSON_UNESCAPED_UNICODE );
 
 ?>
