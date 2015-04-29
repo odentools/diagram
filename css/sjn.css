@@ -47,3 +47,9 @@ li {
 	background: #222;
 	text-shadow: 0 -1px 0 #222;
 }
+
+.boxs {
+	margin: 5px;
+	float: left;
+	list-style: none;	
+}

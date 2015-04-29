@@ -111,7 +111,7 @@ function	MakeTimeTableList($Timetable, $Des) {
 
 	foreach($Timetable as $row => $val) {
 
-		echo '<li id="'.$val["ID"].'">'.$val["Departures"].'　'.$val["Destination"].'行</li>';
+		echo '<li class="boxs" id="'.$val["ID"].'">'.$val["Departures"].'</li>';
 
 	}
 	

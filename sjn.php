@@ -46,10 +46,6 @@ $Timetable = Filter($Timetable, '$val', 'return $val["Period"] == "W";');
 		?>
 	</ul>
 
-	<ul class="Footer">
-		<li><?php echo PAGEHEADER; ?></li>
-	</ul>
-
 <script>
 
 var ClientTime = parseInt((new Date).getTime()/1000);

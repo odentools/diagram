@@ -278,13 +278,13 @@ function changeInput(){
 }
 
 function preparePost(){
-    RouteListT.id = parseInt(document.diagram.RouteNameList.value)
-    RouteListT.RouteName = document.diagram.RouteNameNew.value
-    RouteListT.Management = document.diagram.Management.value
-    RouteListT.DepartureLocation = document.diagram.DepartureLocation.value
-    RouteListT.ArrivalLocation = document.diagram.ArrivalLocation.value
-    DiaGroupT.id = parseInt(document.diagram.DiaNameList.value)
-    DiaGroupT.DiaName = document.diagram.DiaNameNew.value
+    RouteListT.id = parseInt(document.diagram.RouteNameList.value);
+    RouteListT.RouteName = document.diagram.RouteNameNew.value;
+    RouteListT.Management = document.diagram.Management.value;
+    RouteListT.DepartureLocation = document.diagram.DepartureLocation.value;
+    RouteListT.ArrivalLocation = document.diagram.ArrivalLocation.value;
+    DiaGroupT.id = parseInt(document.diagram.DiaNameList.value);
+    DiaGroupT.DiaName = document.diagram.DiaNameNew.value;
 }
 
 function routeNameChange(obj){
@@ -394,7 +394,9 @@ function DiaNameChange(obj){
 
 function test(){
 preparePost();
-var postData = {RouteListT , DiaGroupT , DiaT};
+
+var postData = {'RouteListT':RouteListT , 'RouteListT':DiaGroupT , 'RouteListT':DiaT};
+
 $.ajax({
 	type: "POST",
 	url: "http://oecu.pw/db/T.php",
@@ -402,7 +404,7 @@ $.ajax({
 	data: postData,
 	dataType: "text",
 	success: function(data, dataType) {
-            //console.log(JSON.parse(data));
+            console.log(JSON.parse(data));
 	},
 	error: function(res, textStatus, xhr) {
 		alert("サーバーとの通信に失敗しました。");
