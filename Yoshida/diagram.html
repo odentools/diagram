@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Language" content="ja" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <meta http-equiv="Content-Script-Type" content="text/javascript" />
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js"></script>
+        <title>Canvas</title>
+        <!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
+    </head>
+    <body>
+        <h1>Canvas</h1>
+        <form name="diagram">
+        <table>
+        <tr>
+            <td valign="top">
+                <div align ="right">所要時間<input type="text" name="moveTime" size="6">分</div>
+                <div align ="right">オフセット<input type="range" name="offset" value="420" size="6" min="-30" max="1320" onChange="changeInput();"></div>
+                <div align ="right">拡大率<input type="range" name="expansion" value="1" size="6" min="0.7" max="8" step="0.1" onChange="changeInput();"></div>
+                <canvas id="canvassample" width="1040" height="400"></canvas>
+                <input type="button" onClick="test()" value="test">
+            </td>
+            <td valign="top" weidth="400">
+                <table rules=none><tbody id="times">
+                    <tr>
+                        <td width="55"><input type="button" value="sort" onclick="sort()"></td>
+                        <td width="160"><div style="text-align:center">出発地点</div></td>
+                        <td width="20"></td>
+                        <td width="160"><div style="text-align:center">到着地点</div></td>
+                        <td width="300"><div style="text-align:center">備考</div></td>
+                    </tr>
+                </tbody></table>
+            </td>
+        </tr>
+        </table>
+        <div>路線名：
+        <select name="RouteNameList" id="RouteName" onChange="routeNameChange(this);">
+            <option Value="-1">新規登録</option>
+
+        </select>
+        <input type="text" name="RouteNameNew">
+        </div>
+        <div>
+        ダイヤグループ：<select name="DiaNameList" id="DiaName" onChange="DiaNameChange(this);">
+            <option value="-1">新規登録</option>
+        </select>
+        <input type="text" name="DiaNameNew">
+        </div>
+<div>
+        運営：<input type="text" name="Management">
+        出発地点：<input type="text" name="DepartureLocation">
+        到着地点：<input type="text" name="ArrivalLocation">
+
+
+</div>
+        </form>
+        <script src="diagram.js"></script>
+    </body>
+</html>
