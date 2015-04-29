@@ -1,6 +1,50 @@
 <?php
 /**
  * ----------------------------------------------------------
+ * CheckGetParameter()
+ * GET状態を確認する
+ * ----------------------------------------------------------
+ */
+function	CheckGetParameter($G_Parm) {
+	
+	foreach($G_Parm as $key => $val) {
+		
+		if(!isset($_GET[$key]) || $_GET[$key] === '') {
+			
+			return false;
+
+		}
+		
+	}
+	
+	return true;
+
+}
+
+
+/**
+ * ----------------------------------------------------------
+ * GetGetParameter()
+ * GETデータを取得する
+ * ----------------------------------------------------------
+ */
+function	GetGetParameter($G_Parm) {
+	
+	$Result = NULL;
+	
+	foreach($G_Parm as $key => $val) {
+		
+		$Result[$key] = @$_GET[$key];
+		
+	}
+	
+	return $Result;
+
+}
+
+
+/**
+ * ----------------------------------------------------------
  * CheckPostParameter()
  * POST状態を確認する
  * ----------------------------------------------------------
