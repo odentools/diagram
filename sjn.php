@@ -1,9 +1,9 @@
 <?php
 
+include_once "lib/signage.php";
+
 define ("PAGETITLE", "スクールバス時刻表");
 define ("PAGEHEADER", "Copyright 2015 Visual Media Lab.");
-
-include_once "lib/lib.php";
 
 $NowTime = getCurrentTime();
 $Timetable = getSpreadSheet("1LWNfWc82xB4oCOAh6SnCRGhZRgr7z3oBMj0q4-_9v-k", "od6");
@@ -30,64 +30,17 @@ $Timetable = Filter($Timetable, '$val', 'return $val["Period"] == "W";');
 	<!-- キャッシュの禁止 -->
 	<meta name = "robots" content = "noarchive">
 
-	<link  type="text/css" rel="stylesheet" href="./css/swiper.min.css"/>
-	<link  type="text/css" rel="stylesheet" href="./css/index.css"/>
-	<?php GoogleAnalyticsCode(); ?>
+	<link  type="text/css" rel="stylesheet" href="./css/sjn.css"/>
 
 </head> 
 <body>
-
-	<!-- Swiper -->
-	<div class="swiper-container">
-	<div class="swiper-wrapper">
-
-	<div class="swiper-slide">
-		<ul class="Header">
-    		<li>スクールバス時刻表</li>
-		</ul>
-
-		<ul class="Content">
-		<br>
-		大阪電気通信大学非公式のスクールバス時刻表サイトです。<br>
-		<br>
-		現在このサイトは、β版です。<br>
-		<br><br>
-		お問い合わせは、[@oecu_bus]まで。<br><br>
-		</ul>
-		
-		<ul class="Footer">
-			<li><?php echo PAGEHEADER; ?></li>
-		</ul>
-		
-	</div>
-	
-	<div class="swiper-slide">
-
-	<ul class="Header">
-    	<li>四條畷キャンパス　行</li>
-	</ul>
-
-	<ul class="Content">
-		<li><h2 id="sjnTime"></h2></li>
-		<?php
-			MakeTimeTableList($Timetable, 'sjn');
-		?>
-	</ul>
-
-	<ul class="Footer">
-		<li><?php echo PAGEHEADER; ?></li>
-	</ul>
-
-	</div>
-		
-	<div class="swiper-slide">
 
 	<ul class="Header">
     	<li>寝屋川キャンパス　行</li>
 	</ul>
 
 	<ul class="Content">
-		<li><h2 id="nygTime"></h2></li>
+		<li id="nygTime" style="font-size:4.5em;"></li>
 		<?php
 			MakeTimeTableList($Timetable, 'nyg');
 		?>
@@ -97,33 +50,7 @@ $Timetable = Filter($Timetable, '$val', 'return $val["Period"] == "W";');
 		<li><?php echo PAGEHEADER; ?></li>
 	</ul>
 
-	</div>
-		
-	</div>
-
-	<!-- Add Pagination -->
-	<div style="position:fixed;" class="swiper-pagination"></div>
-	<!-- Add Arrows -->
-	<div style="position:fixed;" class="swiper-button-next"></div>
-	<div style="position:fixed;" class="swiper-button-prev"></div>
-
-	</div>
-	
-<!-- Swiper JS -->
-<script src="./js/swiper.min.js"></script>
-
-<!-- Initialize Swiper -->
 <script>
-var swiper = new Swiper('.swiper-container', {
-	pagination: '.swiper-pagination',
-	slidesPerView: 1,
-	paginationClickable: true,
-	spaceBetween: 30,
-	keyboardControl: true,
-	nextButton: '.swiper-button-next',
-	prevButton: '.swiper-button-prev',
-});
-
 
 var ClientTime = parseInt((new Date).getTime()/1000);
 var ServerTime = <?php echo strtotime($NowTime);?>;
@@ -215,23 +142,20 @@ function TimeUpdate(List, Elm) {
 	} else if(TranceSec(Time) <= 0) {
 
 		_delete_dom_obj(keyString);
-		delete sjnList[keyString];
 		delete nygList[keyString];
 
 	} else {
 		
 		Time = ViewTime(TranceSec(Time));
 	
-		var msg = "出発まで、" + Time['H'] + ":" + Time['M'] + ":" + Time['S'];
+		var msg = "@ " + Time['H'] + ":" + Time['M'] + ":" + Time['S'];
 		document.getElementById(Elm).innerHTML = msg;
 
 	}
 
 }
 
-var sjnTime = setInterval('TimeUpdate(sjnList, "sjnTime")',1000);
 var nygTime = setInterval('TimeUpdate(nygList, "nygTime")',1000);
-
 
 </script>
 </body>
