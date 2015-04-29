@@ -9,6 +9,9 @@ include_once("../db/SQL_Session.php");
 
 $mysqli = new SQL_Session();
 
+$G_Parm = array('id'=>'');
+CheckGetParameter($G_Parm);
+
 if(!isset($_GET["id"]) || $_GET["id"] === '') {
 
 	if(isset($_GET["min"])) {
@@ -31,6 +34,6 @@ if(!isset($_GET["id"]) || $_GET["id"] === '') {
 
 }
 
-echo json_encode($result);
+echo json_encode($result, JSON_UNESCAPED_UNICODE );
 
 ?>
