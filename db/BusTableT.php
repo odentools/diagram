@@ -3,7 +3,7 @@
 define ("PAGETITLE", "時刻表バス登録画面");
 define ("PAGEHEADER", "Copyright 2015 Visual Media Lab.");
 
-include_once "../lib.php";
+include_once "../lib/lib.php";
 include_once "./SQL_Session.php";
 
 $P_Parm = array("RouteName", "StartLocation", "PointOfArrival", "BusCompany");

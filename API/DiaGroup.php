@@ -4,12 +4,18 @@
  * DiaGroupTを扱います
  * レスポンス JSON
  ****************************************************/
-include_once "../lib.php";
+include_once "../lib/lib.php";
 include_once("../db/SQL_Session.php");
 
 $mysqli = new SQL_Session();
 
-if(!isset($_GET["id"]) || $_GET["id"] === '') {
+ if(isset($_GET["RouteListT_ID_"])) {
+
+	$BPrm = array(0=>$_GET["RouteListT_ID_"]);
+	
+	$result = $mysqli->BSelect("DiaGroupT", "RouteListT_ID_=?", "s", $BPrm);	
+
+}else if(!isset($_GET["id"]) || $_GET["id"] === '') {
 
 	if(isset($_GET["min"])) {
 
@@ -23,7 +29,7 @@ if(!isset($_GET["id"]) || $_GET["id"] === '') {
 	
 	$result = $mysqli->GetRecord($query);
 	
-}else {
+} else{
 
 	$BPrm = array(0=>$_GET["id"]);
 	

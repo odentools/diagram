@@ -1,0 +1,49 @@
+@charset "utf-8";
+/* CSS Document */
+
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow-y:hidden;
+}
+body {
+	background: #eee;
+	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-size: 60px;
+	font-weight: bold;
+	color:#000;
+	background: #eee;
+}
+
+li {
+	list-style: none;
+	margin: 0;
+	display: block;
+}
+.Content {
+	list-style: none;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+.Content li {
+	padding: 15px 15px;
+	border: 1px solid #ccc;
+	text-align: left;
+	border-width: 0;
+	border-top-width: 1px;
+	position: relative;
+	color: #333;
+}
+.Header, .Footer {
+	padding: 0px;
+	margin: 0;
+}
+.Header li, .Footer li {
+	padding: .7em 0px;
+	color: #fff;
+	text-align:center;
+	background: #222;
+	text-shadow: 0 -1px 0 #222;
+}

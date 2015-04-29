@@ -4,7 +4,7 @@
  * RouteListTを扱います
  * レスポンス JSON
  ****************************************************/
-include_once "../lib.php";
+include_once "../lib/lib.php";
 include_once("../db/SQL_Session.php");
 
 $mysqli = new SQL_Session();

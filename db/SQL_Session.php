@@ -55,68 +55,81 @@ class	SQL_Session{
 
 	}
 
-	// $BPrmには、keyとしてindexを与えて
+	/**
+	 * @fn
+	 * レコードに条件を与え取得を行う
+	 * @breaf レコードの取得を行う(条件付き)
+	 * @param ($table) テーブルを指定
+	 * @param ($where)　条件文(形式記述:id=?)
+	 * @param ($type) データの型を指定 (i:Int, d:Double, s:String, b:Bool)
+	 * @param ($BPrm) 検索する変数( 記述形式:array(0=>$Parameter) )
+	 * @return レコード(連想配列)
+	 */
 	function	BSelect($table, $where = null, $type, $BPrm) {
 
 		$where == null ? :$where = " where ".$where;
 
 		$stmt = $this->mysqli->prepare("select * from ".$table.$where);
 
-		//パラメータ用配列を作る
 		//型指定：この例では$stmtParams[0]にtypeが入る
 		$stmtParams = array( $type );
 
-		//$stmtParams[1]～にそれぞれデータを参照渡しする
-		//※ここは参照渡しでないとNG
+		// @attention ここは参照渡しでないとNG
 		foreach ($BPrm as $k=>$v){
 			$stmtParams[] = &$BPrm[$k];
 		}
 
-		if(DEBUG && FALSE) {echo "\nstmtParams ： ";var_dump($stmtParams);}
+		if(DEBUG || APIDEBUG) {echo "\nBSelect stmtParams ： ";var_dump($stmtParams);}
 
-		//call_user_func_array経由でbind_paramに渡す
+		// call_user_func_array経由でbind_paramに渡す
 		call_user_func_array(array($stmt, 'bind_param'), $stmtParams);
 
-		// 実行します
 		$stmt->execute();
 
-		// 結果をバッファに保存
 		$stmt->store_result();
 
 		// 連想配列としてレコードを取得
 		$result = $this->fetch_all($stmt);
 
-		/* ステートメントを閉じます */
 		$stmt->close();
 	
 		return $result;
 
 	}
-	
-	// ダイアテーブル削除専用
+
+	/**
+	 * @fn
+	 * ダイアテーブルのレコードを削除する
+	 * @breaf ダイアテーブルのレコード削除する
+	 * @param ($id) ダイアテーブルのレコードID
+	 * @warning レコードの削除については必ず新規のメゾットで作成する事.
+	 * @return なし
+	 */
 	function	BDiaTDelete($id) {
 		
-		$query = "delete from DiaT where DiaGroupT_ID_=?";
-		
+		$table="DiaT";
+		$type = "i";
+		$where = "DiaGroupT_ID_=?";
+
+		$query = "delete from ".$table." where ".$where;
+
 		$stmt = $this->mysqli->prepare($query);
 		
-		$stmt->bind_param('i', $id);
+		$stmt->bind_param($type, $id);
 
-		// プリペアドステートメントを実行します
 		$stmt->execute();
 
-		// ステートメントと接続を閉じます
 		$stmt->close();
 
 	}
 
 	/**
 	 * @fn
-	 * 取得を行う
+	 * レコードの取得を行う
 	 * @sa http://www.akiyan.com/blog/archives/2011/07/php-mysqli-fetchall.html
-	 * @breaf 取得を行う
+	 * @breaf レコードの取得を行う
 	 * @param ($stmt) mysqliのステートメント
-	 * @return レコードのオブジェクト
+	 * @return レコード(連想配列)
 	 */
 	function fetch_all(& $stmt) {
 
@@ -146,12 +159,14 @@ class	SQL_Session{
 
 	/**
 	 * @fn
-	 * クエリを実行しレコードの取得を行う
+	 * クエリを実行し、レコードの取得を行う
 	 * @breaf レコードの取得を行う
 	 * @param ($query) 実行するクエリ
 	 * @return レコード
 	 */
 	function	GetRecord($query) {
+		
+		$row = null;
 		
 		$result = $this->mysqli->query($query);
 
@@ -165,7 +180,7 @@ class	SQL_Session{
 	
 	/**
 	 * @fn
-	 * テーブル中のカラム名を取得する
+	 * テーブルのカラム名を取得する
 	 * @breaf カラム名を取得する
 	 * @param ($table) テーブルを指定
 	 * @return カラム名
@@ -178,16 +193,15 @@ class	SQL_Session{
 
 		while($row[] = $result->fetch_assoc());
 
-
 		foreach($row as $val) {
-			
+
 			foreach((array)$val as $key => $val2) {
 
 				if($key == "Field")	$Field[] = $val2;
 
 			}
 
-		}		
+		}
 
 		return $Field;
 

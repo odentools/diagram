@@ -8,4 +8,6 @@ define('SQL_SERVER_DB', "alpha");
 define('DEBUG', TRUE);//デバッグ時
 //define('DEBUG', FALSE);	//本番運用時
 
+define('APIDEBUG', FALSE);	// API用のデバッグフラグ
+
 ?>
