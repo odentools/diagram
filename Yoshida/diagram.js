@@ -29,10 +29,13 @@ var timeList = new Array;
 var offset;
 var expansion;
 var scrollFlg = 0;
+
 onload = function() {
-    if ( ! canvas || ! canvas.getContext ) {
-        return false;
-    }
+
+	if ( ! canvas || ! canvas.getContext ) {
+		return false;
+	}
+
     ctx = canvas.getContext('2d');
     
     canvas.addEventListener("contextmenu", function(e){ e.preventDefault(); }, false);
@@ -40,31 +43,34 @@ onload = function() {
     offset = parseInt(document.diagram.offset.value) * expansion;
     init();
 
-    //路線リストテーブルのリストを取得
+	// 路線リストの(一覧)取得
+	$.ajax({
 
-    var RouteList
-    $.ajax({
-        type: "GET",
-        url: "http://oecu.pw/API/RouteList.php?min",
-        async: false, // 応答があるまで、ブラウザをロックfalse
-        dataType: "text",
-        success: function(data, dataType) {
-            routeList = JSON.parse(data);
-        },
-        error: function(res, textStatus, xhr) {
-	    alert("サーバーとの通信に失敗しました。");
-        }
-    });
+		type: "GET",
+		url: "http://oecu.pw/API/RouteList.json?min",
+		async: false, // ブラウザロック有効
+		dataType: "json",
 
+		success: function(data, dataType) {
 
-    routeList.forEach(function(a){
-        var element = document.createElement("option");
-        element.value = a.id;
-        element.innerHTML = a.RouteName;
-        document.getElementById("RouteName").appendChild(element);
-    });
+				data.RouteList.forEach(function(a) {
 
-    
+				var element = document.createElement("option");
+				element.value = a.id;
+				element.innerHTML = a.RouteName;
+				document.getElementById("RouteName").appendChild(element);
+
+			});
+
+		},
+		error: function(res, textStatus, xhr) {
+
+			if(res.status!=404) alert("サーバーとの通信に失敗しました。\nCode: " + res.status);
+			return false;
+
+		}
+
+	});
     
     canvas.addEventListener('click', function(e){
             var rect = e.target.getBoundingClientRect();
@@ -287,75 +293,112 @@ function preparePost(){
     DiaGroupT.DiaName = document.diagram.DiaNameNew.value;
 }
 
-function routeNameChange(obj){
-    var RouteList;
-    DiaT = new Array();
-    while(document.getElementById("DiaName").hasChildNodes()){
-        document.getElementById("DiaName").removeChild(document.getElementById("DiaName").firstChild);
-    }
-
-    var element = document.createElement("option");
-    element.value = -1;
-    element.innerHTML = "新規登録";
-    document.getElementById("DiaName").appendChild(element);
-
-    if( obj.options[obj.selectedIndex].value > -1 ){
-        $.ajax({
-            type: "GET",
-            //ダイア名リストがほしい
-            url: "http://oecu.pw/API/RouteList.php?id="+obj.options[obj.selectedIndex].value,
-            async: false, // 応答があるまで、ブラウザをロックfalse
-            dataType: "text",
-            success: function(data, dataType) {
-                RouteList = JSON.parse(data);
-            },
-            error: function(res, textStatus, xhr) {
-	        alert("サーバーとの通信に失敗しました。");
-            }
-        });
-        RouteList.forEach(function(a){
-            document.diagram.RouteNameNew.value = a.RouteName;
-            document.diagram.Management.value = a.Management;
-            document.diagram.DepartureLocation.value = a.DepartureLocation;
-            document.diagram.ArrivalLocation.value = a.ArrivalLocation;
-        });
-        //ダイアグループのリストを作ってくれる処理
-        var DiaGroupList
-        $.ajax({
-            type: "GET",
-            url: "http://oecu.pw/API/DiaGroup.php?RouteListT_ID_="+obj.options[obj.selectedIndex].value,
-            async: false, // 応答があるまで、ブラウザをロックfalse
-            dataType: "text",
-            success: function(data, dataType) {
-                DiaGroupList = JSON.parse(data);
-            },
-            error: function(res, textStatus, xhr) {
-	        alert("サーバーとの通信に失敗しました。");
-            }
-        });
 
 
-        DiaGroupList.forEach(function(a){
-            var element = document.createElement("option");
-            element.value = a.id;
-            element.innerHTML = a.DiaName;
-            document.getElementById("DiaName").appendChild(element);
-        });
+// 路線名ドロップダウンの変更時
+function routeNameChange(obj) {
 
+	var RouteList;
+	DiaT = new Array();
 
-    } else {
-        document.diagram.RouteNameNew.value = "";
-        document.diagram.Management.value = "";
-        document.diagram.DepartureLocation.value = "";
-        document.diagram.ArrivalLocation.value = "";
-        //ダイアグループを初期化する処理（未実装）
-        document.diagram.DiaNameNew.value = "";
-    }
+	while(document.getElementById("DiaName").hasChildNodes()) {
 
+		document.getElementById("DiaName").removeChild(document.getElementById("DiaName").firstChild);
 
-    sort();
-    repaint();
+	}
+
+	var element = document.createElement("option");
+	element.value = -1;
+	element.innerHTML = "新規登録";
+	document.getElementById("DiaName").appendChild(element);
+
+	if( obj.options[obj.selectedIndex].value > -1 ) {
+
+		// 路線リストの(詳細)取得
+		$.ajax({
+
+			type: "GET",
+
+			//ダイア名リストがほしい
+			url: "http://oecu.pw/API/RouteList.json?id="+obj.options[obj.selectedIndex].value,
+			async: false, // ブラウザロック有効
+			dataType: "json",
+
+			success: function(data, dataType) {
+				
+				data.RouteList.forEach(function(a) {
+
+					document.diagram.RouteNameNew.value = a.RouteName;
+					document.diagram.Management.value = a.Management;
+					document.diagram.DepartureLocation.value = a.DepartureLocation;
+					document.diagram.ArrivalLocation.value = a.ArrivalLocation;
+				
+				});	
+				
+		
+				// ダイアグループの(一覧)取得
+				$.ajax({
+
+					type: "GET",
+					url: "http://oecu.pw/API/DiaGroup.json?RouteListT_ID_="+obj.options[obj.selectedIndex].value,
+					async: false, // ブラウザロック有効
+					dataType: "json",
+
+					success: function(data, dataType) {
+
+						data.DiaGroup.forEach(function(a) {
+			
+							var element = document.createElement("option");
+							element.value = a.id;
+							element.innerHTML = a.DiaName;
+							document.getElementById("DiaName").appendChild(element);
+				
+						});
+
+					},
+					error: function(res, textStatus, xhr) {
+
+						if(res.status==404) {
+
+							alert("ダイヤグループがありません\n登録して下さい");
+
+						} else {
+
+							alert("サーバーとの通信に失敗しました。\nCode: " + res.status);
+							
+						}
+						return false;
+
+					}
+			
+				});
+
+			},
+			error: function(res, textStatus, xhr) {
+				
+				if(res.status!=404) alert("サーバーとの通信に失敗しました。\nCode: " + res.status);
+				return false;
+
+			}
+
+		});
+
+	} else {
+		
+		document.diagram.RouteNameNew.value = "";
+		document.diagram.Management.value = "";
+		document.diagram.DepartureLocation.value = "";
+		document.diagram.ArrivalLocation.value = "";
+
+		//ダイアグループを初期化する処理（未実装）
+		document.diagram.DiaNameNew.value = "";
+	}
+
+	sort();
+	repaint();
+
 }
+
 
 function DiaNameChange(obj){
     var DiaList;
