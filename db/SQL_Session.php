@@ -1,14 +1,5 @@
 <?php
-
 include_once("SQL_Config.php");
-
-if(DEBUG) {
-	ini_set( 'display_errors', 1);
-	error_reporting(-1);
-} else {
-	ini_set( 'display_errors', 0);
-	error_reporting(0);
-}
 
 class	SQL_Session{
 
@@ -63,13 +54,14 @@ class	SQL_Session{
 	 * @param ($where)　条件文(形式記述:id=?)
 	 * @param ($type) データの型を指定 (i:Int, d:Double, s:String, b:Bool)
 	 * @param ($BPrm) 検索する変数( 記述形式:array(0=>$Parameter) )
+	 * @param ($Select) 検索するカラムを指定
 	 * @return レコード(連想配列)
 	 */
-	function	BSelect($table, $where = null, $type, $BPrm) {
+	function	BSelect($table, $where = null, $type, $BPrm, $Select = '*') {
 
 		$where == null ? :$where = " where ".$where;
 
-		$stmt = $this->mysqli->prepare("select * from ".$table.$where);
+		$stmt = $this->mysqli->prepare("select ".$Select." from ".$table.$where);
 
 		//型指定：この例では$stmtParams[0]にtypeが入る
 		$stmtParams = array( $type );
