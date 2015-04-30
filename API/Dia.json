@@ -1,0 +1,45 @@
+<?php
+/****************************************************
+ * ダイアテーブルWeb API
+ * DiaTを扱います
+ * レスポンス JSON
+ ****************************************************/
+ 
+	include_once("./json.php");
+	$json = new JSON();
+
+	include_once("../lib/lib.php");
+	include_once("../db/SQL_Session.php");
+
+	$mysqli = new SQL_Session();
+
+	if(isset($_GET["min"])) {
+		
+		$Select = "DepartureTime, ArrivalTime, RouteName";
+		
+	} else {
+		
+		$Select = "*";
+		
+	}
+
+	$G_Parm = array('DiaGroupT_ID_' => NULL);
+	if(CheckGetParameter($G_Parm)) {
+
+		$BPrm = array(0=>$_GET["DiaGroupT_ID_"]);
+	
+		$result = $mysqli->BSelect("DiaT", "DiaGroupT_ID_=?", "s", $BPrm);
+
+		$json->PushResult($result);
+
+	} else {
+
+		$query = "select ".$Select." from DiaT";
+
+		$result = $mysqli->GetRecord($query);
+
+		$json->PushResult($result);
+
+	}
+
+?>

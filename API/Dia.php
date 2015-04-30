@@ -1,7 +1,7 @@
 <?php
 /****************************************************
- * 路線リストテーブルWeb API
- * RouteListTを扱います
+ * ダイアテーブルWeb API
+ * DiaGroupTを扱います
  * レスポンス JSON
  ****************************************************/
 include_once "../lib/lib.php";
@@ -13,7 +13,7 @@ if(!isset($_GET["DiaGroupT_ID_"]) || $_GET["DiaGroupT_ID_"] === '') {
 
 	if(isset($_GET["min"])) {
 
-		$query = "select DepartureTime, ArrivalTime RouteName from DiaT";
+		$query = "select DepartureTime, ArrivalTime, RouteName from DiaT";
 
 	} else {
 		
