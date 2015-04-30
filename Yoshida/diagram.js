@@ -429,7 +429,7 @@ function DiaNameChange(obj) {
 
 			success: function(data, dataType) {
 				
-				JSON.parse(data).Dia.forEach(function(a) {
+				data.Dia.forEach(function(a) {
 					
 					tmpDepartureTime = a.DepartureTime.split(":");
 					tmpArrivalTime = a.ArrivalTime.split(":");
