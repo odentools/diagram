@@ -35,11 +35,10 @@ function init() {
 
     todayOffset = ScheduleT[0].TravalDate;
     console.log(ScheduleT[0].TravelDate);
-    ScheduleT.foreach(function(a){
-        
+	
+    ScheduleT.forEach(function(a) {
 
-
-    });
+	});
 
     ctx.fillText(30, 30, 30);
     ctx.stroke();
@@ -55,7 +54,7 @@ function repaint(){
 
 function test(){
 preparePost();
-var postData = {RouteListT , DiaGroupT , DiaT};
+var postData = {'RouteListT':RouteListT , 'DiaGroupT':DiaGroupT , 'DiaT':DiaT};
 $.ajax({
 
 });
