@@ -436,9 +436,10 @@ function DiaNameChange(obj){
 }
 
 function test(){
+	
 preparePost();
+var postData = {'RouteListT':RouteListT, 'DiaGroupT':DiaGroupT, 'DiaT':DiaT};
 
-var postData = {'RouteListT':RouteListT , 'RouteListT':DiaGroupT , 'RouteListT':DiaT};
 
 $.ajax({
 	type: "POST",
@@ -447,7 +448,7 @@ $.ajax({
 	data: postData,
 	dataType: "text",
 	success: function(data, dataType) {
-            console.log(JSON.parse(data));
+ //           console.log(JSON.parse(data));
 	},
 	error: function(res, textStatus, xhr) {
 		alert("サーバーとの通信に失敗しました。");
