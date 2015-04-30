@@ -30,7 +30,7 @@
 	
 		$result = $mysqli->BSelect("DiaGroupT", "RouteListT_ID_=?", "s", $BPrm);
 
-		$json->PushResult($result);
+		$json->PushResult($result, "DiaGroup");
 
 	} else {
 
@@ -38,7 +38,7 @@
 
 		$result = $mysqli->GetRecord($query);
 
-		$json->PushResult($result);
+		$json->PushResult($result, "DiaGroup");
 
 	}
 

@@ -18,13 +18,13 @@ class	JSON{
 		switch($this->StatusCode) {
 			
 			case '404':
-				$this->result[] = array("message"=>"Error: Not found","code"=>"404");
+				$this->result['status'] = array("message"=>"Error: Not found","code"=>"404");
 				header("HTTP/1.1 404 Not Found");
 				break;
 
 			case '200':
 			default:
-				$this->result[] = array("message"=>"Success: OK", "code"=>"200");
+				$this->result['status'] = array("message"=>"Success: OK", "code"=>"200");
 				break;
 
 		}
@@ -40,9 +40,9 @@ class	JSON{
 
 	}
 	
-	function	PushResult(&$arr) {
+	function	PushResult(&$arr, $key=null) {
 
-		if(is_array($arr) && !empty($arr))	$this->result[] = &$arr;
+		if(is_array($arr) && !empty($arr)) $this->result[$key] = &$arr;
 
 	}
 

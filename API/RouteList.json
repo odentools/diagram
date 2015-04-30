@@ -30,7 +30,7 @@
 
 		$result = $mysqli->BSelect("RouteListT", "id=?", "s", $BPrm, $Select);
 
-		$json->PushResult($result);
+		$json->PushResult($result, 'RouteList');
 
 	} else {
 
@@ -38,7 +38,7 @@
 
 		$result = $mysqli->GetRecord($query);
 
-		$json->PushResult($result);
+		$json->PushResult($result, 'RouteList');
 
 	}
 
