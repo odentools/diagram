@@ -266,33 +266,44 @@ function sort(){
     });
 }
 
-function deletePoint(num){
-    delete DiaT[num];
-    //前の処理を待ってから実行する
-    window.setTimeout( function(){document.getElementById("times").removeChild(document.getElementById("rowc" + num));},0);
-    repaint();
 
+function deletePoint(num) {
+
+	delete DiaT[num];
+
+	//前の処理を待ってから実行する
+	window.setTimeout(
+		function(){
+			document.getElementById("times").removeChild(document.getElementById("rowc" + num));
+		},
+		0
+	);
+
+	repaint();
 
 }
 
 
-function changeInput(){
+function changeInput() {
 
-    expansion = parseFloat(document.diagram.expansion.value);
-    offset = parseInt(document.diagram.offset.value)*expansion;
-    repaint();
+	expansion = parseFloat(document.diagram.expansion.value);
+	offset = parseInt(document.diagram.offset.value)*expansion;
+	repaint();
+
 }
 
-function preparePost(){
-    RouteListT.id = parseInt(document.diagram.RouteNameList.value);
-    RouteListT.RouteName = document.diagram.RouteNameNew.value;
-    RouteListT.Management = document.diagram.Management.value;
-    RouteListT.DepartureLocation = document.diagram.DepartureLocation.value;
-    RouteListT.ArrivalLocation = document.diagram.ArrivalLocation.value;
-    DiaGroupT.id = parseInt(document.diagram.DiaNameList.value);
-    DiaGroupT.DiaName = document.diagram.DiaNameNew.value;
-}
 
+function preparePost() {
+
+	RouteListT.id = parseInt(document.diagram.RouteNameList.value);
+	RouteListT.RouteName = document.diagram.RouteNameNew.value;
+	RouteListT.Management = document.diagram.Management.value;
+	RouteListT.DepartureLocation = document.diagram.DepartureLocation.value;
+	RouteListT.ArrivalLocation = document.diagram.ArrivalLocation.value;
+	DiaGroupT.id = parseInt(document.diagram.DiaNameList.value);
+	DiaGroupT.DiaName = document.diagram.DiaNameNew.value;
+
+}
 
 
 // 路線名ドロップダウンの変更時
@@ -400,60 +411,96 @@ function routeNameChange(obj) {
 }
 
 
-function DiaNameChange(obj){
-    var DiaList;
-    DiaT = new Array();
-    if( obj.options[obj.selectedIndex].value > -1 ) {
-
-        $.ajax({
-            type: "GET",
-            url: "http://oecu.pw/API/Dia.php?DiaGroupT_ID_="+obj.options[obj.selectedIndex].value,
-            async: false, // 応答があるまで、ブラウザをロックfalse
-            dataType: "text",
-            success: function(data, dataType) {
-                DiaList = JSON.parse(data);
-            },
-            error: function(res, textStatus, xhr) {
-	        alert("サーバーとの通信に失敗しました。");
-            }
-        });
-
-        document.diagram.DiaNameNew.value = obj.options[obj.selectedIndex].text;
-
-        if( DiaList != null ){ DiaList.forEach(function(a){
-            tmpDepartureTime = a.DepartureTime.split(":");
-            tmpArrivalTime = a.ArrivalTime.split(":");
-            DiaT.push({DepartureTime:a.DepartureTime, ArrivalTime:a.ArrivalTime, DepartureTimeSecond:(tmpDepartureTime[0]*3600 + tmpDepartureTime[1]*60),ArrivalTimeSecond:(tmpArrivalTime[0]*3600 + tmpArrivalTime[1]*60),Note:a.Note});
-            //console.log(a);
-        });}
-    } else {
-        document.diagram.DiaNameNew.value = "";
-    }
-    sort();
-    rowCount = DiaT.length;
-    repaint();
-
-}
-
-function test(){
+// ダイアグループドロップダウンの変更時
+function DiaNameChange(obj) {
 	
-preparePost();
-var postData = {'RouteListT':RouteListT, 'DiaGroupT':DiaGroupT, 'DiaT':DiaT};
+	DiaT = new Array();
+	
+	if( obj.options[obj.selectedIndex].value > -1 ) {
+		
+		document.diagram.DiaNameNew.value = obj.options[obj.selectedIndex].text;
+		
+		$.ajax({
+			
+			type: "GET",
+			url: "http://oecu.pw/API/Dia.json?DiaGroupT_ID_="+obj.options[obj.selectedIndex].value,
+			async: false, // ブラウザロック有効
+			dataType: "json",
 
+			success: function(data, dataType) {
+				
+				JSON.parse(data).Dia.forEach(function(a) {
+					
+					tmpDepartureTime = a.DepartureTime.split(":");
+					tmpArrivalTime = a.ArrivalTime.split(":");
+					DiaT.push({
+						DepartureTime:a.DepartureTime,
+						ArrivalTime:a.ArrivalTime,
+						DepartureTimeSecond:(tmpDepartureTime[0]*3600 + tmpDepartureTime[1]*60),
+						ArrivalTimeSecond:(tmpArrivalTime[0]*3600 + tmpArrivalTime[1]*60),
+						Note:a.Note
+					});
+					
+				});
 
-$.ajax({
-	type: "POST",
-	url: "http://oecu.pw/db/T.php",
-	async: false, // 応答があるまで、ブラウザをロックfalse
-	data: postData,
-	dataType: "text",
-	success: function(data, dataType) {
- //           console.log(JSON.parse(data));
-	},
-	error: function(res, textStatus, xhr) {
-		alert("サーバーとの通信に失敗しました。");
-	},
-});
+			},
+			error: function(res, textStatus, xhr) {
+
+				if(res.status==404) {
+
+					alert("ダイヤがありません\n登録して下さい");
+
+				} else {
+
+					alert("サーバーとの通信に失敗しました。\nCode: " + res.status);
+
+				}
+
+				return false;
+	
+			}
+
+		});
+
+	} else {
+
+		document.diagram.DiaNameNew.value = "";
+		
+	}
+
+	sort();
+	rowCount = DiaT.length;
+	repaint();
 
 }
 
+
+// DB登録
+function register() {
+
+	preparePost();
+
+	var postData = {'RouteListT':RouteListT, 'DiaGroupT':DiaGroupT, 'DiaT':DiaT};
+
+	$.ajax({
+		
+		type: "POST",
+		url: "http://oecu.pw/db/T.php",
+		async: false, // ブラウザロック有効
+		data: postData,
+		dataType: "text",
+
+		success: function(data, dataType) {
+
+			//console.log(JSON.parse(data));
+
+		},
+		error: function(res, textStatus, xhr) {
+
+			alert("サーバーとの通信に失敗しました。");
+
+		}
+
+	});
+
+}

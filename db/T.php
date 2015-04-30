@@ -13,7 +13,7 @@ if(CheckPostParameter($P_Parm)) {
 
 	$P_Data = GetPostParameter($P_Parm);
 
-	// 路線リストテーブル新規			ダイアグループテーブル新規&& $P_Data["DiaGroupT"]["id"] == "-1"
+	// 路線リストテーブル新規
 	if($P_Data["RouteListT"]["id"] == "-1") {
 
 		unset($P_Data["RouteListT"]["id"]);
@@ -67,7 +67,7 @@ if(CheckPostParameter($P_Parm)) {
 
 	}
 		
-		echo json_encode($result);
+	echo json_encode($result);
 
 }
 
