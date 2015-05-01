@@ -10,7 +10,7 @@ function	_makeTimeTableList($Timetable, $Des) {
 
 	foreach($Timetable as $row => $val) {
 
-		echo '<li id=id"'.$val["id"].'">'.$val["DepartureTime"].'</li>';
+		echo '<li id=id'.$val["id"].'>'.date('H:i', strtotime($val["DepartureTime"])).'　'.$val["Note"].'</li>';
 
 	}
 	
@@ -252,8 +252,9 @@ function TimeUpdate(List, Elm) {
 	} else if(TranceSec(Time) <= 0) {
 
 		_delete_dom_obj(keyString);
-		delete sjnList[keyString];
-		delete nygList[keyString];
+
+		if(Elm == "sjnTime") delete sjnList[keyString];
+		if(Elm == "nygTime") delete nygList[keyString];
 
 	} else {
 		
