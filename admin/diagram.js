@@ -47,7 +47,7 @@ onload = function() {
 	$.ajax({
 
 		type: "GET",
-		url: "http://oecu.pw/API/RouteList.json?min",
+		url: "http://oecu.pw/api/1/RouteList.json?min",
 		async: false, // ブラウザロック有効
 		dataType: "json",
 
@@ -331,7 +331,7 @@ function routeNameChange(obj) {
 			type: "GET",
 
 			//ダイア名リストがほしい
-			url: "http://oecu.pw/API/RouteList.json?id="+obj.options[obj.selectedIndex].value,
+			url: "http://oecu.pw/api/1/RouteList.json?id="+obj.options[obj.selectedIndex].value,
 			async: false, // ブラウザロック有効
 			dataType: "json",
 
@@ -351,7 +351,7 @@ function routeNameChange(obj) {
 				$.ajax({
 
 					type: "GET",
-					url: "http://oecu.pw/API/DiaGroup.json?RouteListT_ID_="+obj.options[obj.selectedIndex].value,
+					url: "http://oecu.pw/api/1/DiaGroup.json?RouteListT_ID_="+obj.options[obj.selectedIndex].value,
 					async: false, // ブラウザロック有効
 					dataType: "json",
 
@@ -423,7 +423,7 @@ function DiaNameChange(obj) {
 		$.ajax({
 			
 			type: "GET",
-			url: "http://oecu.pw/API/Dia.json?DiaGroupT_ID_="+obj.options[obj.selectedIndex].value,
+			url: "http://oecu.pw/api/1/Dia.json?DiaGroupT_ID_="+obj.options[obj.selectedIndex].value,
 			async: false, // ブラウザロック有効
 			dataType: "json",
 

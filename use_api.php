@@ -24,7 +24,7 @@ function	_makeTimeTableList($Timetable, $Des) {
 
 function getDiaArray($DiaGroupT_ID_) {
 
-	$url = "http://oecu.pw/API/Dia.json?DiaGroupT_ID_=".$DiaGroupT_ID_;
+	$url = "http://oecu.pw/api/1/Dia.json?DiaGroupT_ID_=".$DiaGroupT_ID_;
 
 	$json = file_get_contents($url);
 
