@@ -101,7 +101,10 @@ $NowTime = getCurrentTime();
 	<ul class="Content">
 		<li><h2 id="sjnTime"></h2></li>
 		<?php
-			_makeTimeTableList(getDiaArray(1), 'sjn');
+
+		// 現在時刻未満のデータをフィルタリング
+		_makeTimeTableList(Filter(getDiaArray(1), '$val', 'return strtotime(getCurrentTime()) < strtotime($val["DepartureTime"]);'), 'sjn');
+
 		?>
 	</ul>
 
@@ -120,7 +123,10 @@ $NowTime = getCurrentTime();
 	<ul class="Content">
 		<li><h2 id="nygTime"></h2></li>
 		<?php
-			_makeTimeTableList(getDiaArray(3), 'nyg');
+		
+		// 現在時刻未満のデータをフィルタリング
+		_makeTimeTableList(Filter(getDiaArray(3), '$val', 'return strtotime(getCurrentTime()) < strtotime($val["DepartureTime"]);'), 'nyg');
+
 		?>
 	</ul>
 
