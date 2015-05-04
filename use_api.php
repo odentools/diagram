@@ -41,7 +41,7 @@ function getDiaArray($DiaGroupT_ID_) {
 define ("PAGETITLE", "スクールバス時刻表");
 define ("PAGEHEADER", "Copyright 2015 Visual Media Lab.");
 
-include_once("lib/lib.php");
+include_once("./lib/lib.php");
 
 $NowTime = getCurrentTime();
 

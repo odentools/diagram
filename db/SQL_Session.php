@@ -71,7 +71,7 @@ class	SQL_Session{
 			$stmtParams[] = &$BPrm[$k];
 		}
 
-		if(DEBUG || APIDEBUG) {echo "\nBSelect stmtParams ： ";var_dump($stmtParams);}
+		if(APIDEBUG) {echo "\nBSelect stmtParams ： ";var_dump($stmtParams);}
 
 		// call_user_func_array経由でbind_paramに渡す
 		call_user_func_array(array($stmt, 'bind_param'), $stmtParams);
