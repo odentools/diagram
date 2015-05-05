@@ -1,6 +1,6 @@
 <?php
 
-include_once("../GLOBAL_CONFIG.php");
+include_once(dirname(__FILE__) ."/../GLOBAL_CONFIG.php");
 
 define('SQL_SERVER_ADDRESS', "oecu.pw");
 define('SQL_SERVER_USER', "timetable");
