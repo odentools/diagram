@@ -1,5 +1,5 @@
 <?php
-include_once("SQL_Config.php");
+include_once(dirname(__FILE__) ."/SQL_Config.php");
 
 class	SQL_Session{
 

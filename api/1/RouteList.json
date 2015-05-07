@@ -4,12 +4,12 @@
  * RouteListTを扱います
  * レスポンス JSON
  ****************************************************/
- 
-	include_once("./json.php");
-	$json = new JSON();
 
-	include_once("../../lib/lib.php");
-	include_once("../../db/SQL_Session.php");
+	include_once(dirname(__FILE__) ."/../../db/SQL_Session.php");
+	include_once(dirname(__FILE__) ."/../../lib/lib.php");
+	include_once(dirname(__FILE__) ."/json.php");
+
+	$json = new JSON();
 
 	$mysqli = new SQL_Session();
 

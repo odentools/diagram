@@ -18,14 +18,14 @@ class	JSON{
 
 		switch($this->StatusCode) {
 
-			case '404':
-				$this->result['status'] = array("message"=>"Error: Not found","code"=>"404");
+			case 404:
+				$this->result['status'] = array("message"=>"Error: Not found","code"=>404);
 				header("HTTP/1.1 404 Not Found");
 				break;
 
-			case '200':
+			case 200:
 			default:
-				$this->result['status'] = array("message"=>"Success: OK", "code"=>"200");
+				$this->result['status'] = array("message"=>"Success: OK", "code"=>200);
 				break;
 
 		}
@@ -37,7 +37,7 @@ class	JSON{
 
 	function	CheckStatus() {
 
-		if(is_null($this->result)) $this->StatusCode = '404';
+		if(is_null($this->result)) $this->StatusCode = 404;
 
 	}
 

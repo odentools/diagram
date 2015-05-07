@@ -1,6 +1,7 @@
 <?php
-include_once "../lib/lib.php";
-include_once "./SQL_Session.php";
+
+include_once(dirname(__FILE__) ."/../lib/lib.php");
+include_once(dirname(__FILE__) ."/SQL_Session.php");
 
 $P_Parm = array("RouteListT" => "ssss", "DiaGroupT" => "is");
 $mysqli = new SQL_Session();
