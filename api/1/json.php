@@ -7,16 +7,17 @@ class	JSON{
 
 	function	__construct() {
 
+		header('Access-Control-Allow-Origin: *');
 		header("Content-Type: application/json; charset=utf-8");
 
 	}
 
 	function	__destruct() {
-		
+
 		$this->CheckStatus();
 
 		switch($this->StatusCode) {
-			
+
 			case '404':
 				$this->result['status'] = array("message"=>"Error: Not found","code"=>"404");
 				header("HTTP/1.1 404 Not Found");
@@ -35,11 +36,11 @@ class	JSON{
 
 
 	function	CheckStatus() {
-		
+
 		if(is_null($this->result)) $this->StatusCode = '404';
 
 	}
-	
+
 	function	PushResult(&$arr, $key=null) {
 
 		if(is_array($arr) && !empty($arr)) $this->result[$key] = &$arr;
