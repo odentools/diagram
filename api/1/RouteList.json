@@ -36,7 +36,6 @@
 
 		$query = "select ".$Select." from RouteListT";
 
-		// $result = $mysqli->GetRecord($query);
 		$result = $mysqli->BSelect("RouteListT", $Select);
 
 		$json->PushResult($result, 'RouteList');

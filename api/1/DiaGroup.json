@@ -36,7 +36,6 @@
 
 		$query = "select ".$Select." from DiaGroupT";
 
-		// $result = $mysqli->GetRecord($query);
 		$result = $mysqli->BSelect("DiaGroupT", $Select);
 
 		$json->PushResult($result, "DiaGroup");
