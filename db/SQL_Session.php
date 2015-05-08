@@ -51,15 +51,16 @@ class	SQL_Session{
 	 * レコードに条件を与え取得を行う
 	 * @breaf レコードの取得を行う(条件付き)
 	 * @param ($table) テーブルを指定
+	 * @param ($Select) 検索するカラムを指定
 	 * @param ($where)　条件文(形式記述:id=?)
 	 * @param ($type) データの型を指定 (i:Int, d:Double, s:String, b:Bool)
 	 * @param ($BPrm) 検索する変数( 記述形式:array(0=>$Parameter) )
-	 * @param ($Select) 検索するカラムを指定
+
 	 * @return レコード(連想配列)
 	 */
-	function	BSelect($table, $where = null, $type, $BPrm, $Select = '*') {
+	function	BSelect($table, $Select = '*', $where = null, $type = null, $BPrm = null) {
 
-		$where == null ? :$where = " where ".$where;
+		$where == null ? $where = "":$where = " where ".$where;
 
 		$stmt = $this->mysqli->prepare("select ".$Select." from ".$table.$where);
 
@@ -154,6 +155,7 @@ class	SQL_Session{
 	 * クエリを実行し、レコードの取得を行う
 	 * @breaf レコードの取得を行う
 	 * @param ($query) 実行するクエリ
+	 * @attention 戻り値の型は全てStringになります
 	 * @return レコード
 	 */
 	function	GetRecord($query) {
@@ -165,6 +167,8 @@ class	SQL_Session{
 		while($rec = $result->fetch_assoc()){
 			$row[] = $rec;
 		}
+
+
 
 		return $row;
 

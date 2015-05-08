@@ -5,7 +5,7 @@
  * レスポンス JSON
  ****************************************************/
 
-	include_once(dirname(__FILE__) ."/../../db/SQL_Session.php");
+	include_once(dirname(__FILE__) ."/../../db_test/SQL_Session.php");
 	include_once(dirname(__FILE__) ."/../../lib/lib.php");
 	include_once(dirname(__FILE__) ."/json.php");
 
@@ -28,7 +28,7 @@
 
 		$BPrm = array(0=>$_GET["id"]);
 
-		$result = $mysqli->BSelect("RouteListT", "id=?", "s", $BPrm, $Select);
+		$result = $mysqli->BSelect("RouteListT", $Select, "id=?", "s", $BPrm);
 
 		$json->PushResult($result, 'RouteList');
 
@@ -36,7 +36,8 @@
 
 		$query = "select ".$Select." from RouteListT";
 
-		$result = $mysqli->GetRecord($query);
+		// $result = $mysqli->GetRecord($query);
+		$result = $mysqli->BSelect("RouteListT", $Select);
 
 		$json->PushResult($result, 'RouteList');
 
