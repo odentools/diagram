@@ -9,6 +9,9 @@ jQuery(document).ready(function()
 
 	var DeparturePoint = 0;
 	var ArrivalPoint = 0;
+	
+	var scrollOldXPoint = 0;
+	var scrollFlg = 0;
 
 	// キャンバスのイベントリスナー (クリック)
 	canvas.addEventListener('click', function(e){
@@ -103,28 +106,64 @@ jQuery(document).ready(function()
 
 		}
 
+		// キャンバスのスクロール
+		if(scrollFlg == 1) {
 
-/*
-if(scrollFlg == 1){
-var XPoint = e.clientX - rect.left;
-if( scrollOldXPoint == 0){ scrollOldXPoint = XPoint;}
-document.diagram.offset.value = parseInt(document.diagram.offset.value) + scrollOldXPoint - XPoint;
-offset += (scrollOldXPoint - XPoint) * expansion;
-if(offset < -30) offset = -30;
-if(offset > 1320 * expansion) offset = 1320 * expansion;
-repaint();
-scrollOldXPoint = XPoint;
-}*/
+			var XPoint = e.clientX - rect.left;
+
+			if( scrollOldXPoint == 0) {
+				scrollOldXPoint = XPoint;
+			}
+			
+			document.diagram.offset.value = parseInt(document.diagram.offset.value) + scrollOldXPoint - XPoint;
+
+			repaint();
+
+			scrollOldXPoint = XPoint;
+
+		}
 
 	}, false);
 
 
+    canvas.addEventListener("contextmenu", function(e){ e.preventDefault(); }, false);
 
 
+    canvas.addEventListener('mousedown', function(e){
+
+        if(e.button == 0){
+            scrollFlg = 1;
+            scrollOldXPoint = 0;
+        }
+        if( e.button == 2){
+            DeparturePoint = 0;
+        }
+        repaint();
+    }, false);
 
 
+    canvas.addEventListener('mouseup', function(e){
+
+        if(e.button == 0){
+            scrollFlg = 0;
+        }
+        if( e.button == 2){
+            DeparturePoint = 0;
+        }
+        repaint();
+    }, false);
 
 
+    document.addEventListener('mouseup', function(e){
+
+        if(e.button == 0){
+            scrollFlg = 0;
+        }
+        if( e.button == 2){
+            DeparturePoint = 0;
+        }
+        repaint();
+    }, false);
 
 	draw_canvas();
 	getRouteList();
@@ -480,66 +519,7 @@ function register() {
 /*
 
 
-var DeparturePoint = 0;
-var ArrivalPoint = 0;
-var rightDeparturePoint = 0;
-var rightArrivalPoint = 0;
-var scrollOldXPoint = 0;
-var rowCount = 0;
-var timeList = new Array;
-var offset;
-var expansion;
-var scrollFlg = 0;
-
-
-
-
-    
-    canvas.addEventListener("contextmenu", function(e){ e.preventDefault(); }, false);
-
-
-
-    
-    
-   
-
-
-
-    canvas.addEventListener('mousedown', function(e){
-
-        if(e.button == 0){
-            scrollFlg = 1;
-            scrollOldXPoint = 0;
-        }
-        if( e.button == 2){
-            DeparturePoint = 0;
-        }
-        repaint();
-    }, false);
-
-    canvas.addEventListener('mouseup', function(e){
-
-        if(e.button == 0){
-            scrollFlg = 0;
-        }
-        if( e.button == 2){
-            DeparturePoint = 0;
-        }
-        repaint();
-    }, false);
-    document.addEventListener('mouseup', function(e){
-        if(e.button == 0){
-            scrollFlg = 0;
-        }
-        if( e.button == 2){
-            DeparturePoint = 0;
-        }
-        repaint();
-    }, false);
-
-};
-
-
+これはリペイントすれば行ける。
 function changeTime(num){
 
     DiaT[num].DepartureTime = document.diagram["DepartureHour"+num].value + ":" + document.diagram["DepartureMinute"+num].value +":00";
@@ -552,6 +532,7 @@ function changeTime(num){
 
 }
 
+グリッドの基本機能で実装する
 function deletePoint(num) {
 
 	delete DiaT[num];
