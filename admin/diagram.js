@@ -32,13 +32,12 @@ jQuery(document).ready(function()
 					ArrivalPoint = mouseX + parseInt(document.diagram.moveTime.value)*expansion;
 				}
 
-			} else {
+			}
 
-				// 下から上にダイアを引く為に実装
-				if(mouseY >= 370 && mouseY <= 390 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445) {
-					ArrivalPoint = mouseX;
-				}
+		} else {
 
+			if(mouseY >= 370 && mouseY <= 390 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445) {
+				ArrivalPoint = mouseX;
 			}
 
 		}
@@ -52,36 +51,72 @@ jQuery(document).ready(function()
 			var ArrivalHour = Math.floor(((ArrivalPoint+offset)/expansion+5)/60);
 			var ArrivalMinute = Math.floor((((ArrivalPoint+offset)/expansion+5)/60-ArrivalHour)*60/10)*10;
 
-			// 所要時間が確定している場合
-			/*
-			if(document.diagram.moveTime.value != 0) {
-				if(ArrivalMinute >= 60){
-					ArrivalHour+=1;
-					ArrivalMinute -= 60;
-				}
+			// 時刻のフォーマットを修正
+			while(DepartureMinute > 60) {
+				DepartureMinute-=60;
+				DepartureHour++;
 			}
-			*/
+
+			while(ArrivalMinute > 60) {
+				ArrivalMinute-=60;
+				ArrivalHour++;
+			}
+
+			if(DepartureHour < 10)		DepartureHour = '0'+DepartureHour;
+			if(DepartureMinute < 10)	DepartureMinute = '0'+DepartureMinute;
+			if(ArrivalHour < 10)		ArrivalHour = '0'+ArrivalHour;
+			if(ArrivalMinute < 10)		ArrivalMinute = '0'+ArrivalMinute;
 
 			DeparturePoint = 0;
 			ArrivalPoint = 0;
-			
-			console.log(DepartureHour+":"+DepartureMinute);
-			console.log(ArrivalHour+":"+ArrivalMinute);
+
+			$("#list").addRowData(undefined, {
+				departure_time:DepartureHour+":"+DepartureMinute, 
+				arrival_time:ArrivalHour+":"+ArrivalMinute, 
+				note:""
+			});
+
+		}
+
+		repaint();
+
+    }, false);
+
+
+	// キャンバスのイベントリスナー (マウス移動)
+	canvas.addEventListener('mousemove', function(e){
+
+		var rect = e.target.getBoundingClientRect();
+
+		// ダイア線の追従
+		if(DeparturePoint != 0) {
+
+			var mouseX = e.clientX - rect.left;
+			var mouseY = e.clientY - rect.top;
+
+			repaint();
+
+			ctx.beginPath();
+			ctx.moveTo(DeparturePoint, 20);
+			ctx.lineTo(mouseX, mouseY);
+			ctx.stroke();
 
 		}
 
 
-
-
-
 /*
-
-
-
+if(scrollFlg == 1){
+var XPoint = e.clientX - rect.left;
+if( scrollOldXPoint == 0){ scrollOldXPoint = XPoint;}
+document.diagram.offset.value = parseInt(document.diagram.offset.value) + scrollOldXPoint - XPoint;
+offset += (scrollOldXPoint - XPoint) * expansion;
+if(offset < -30) offset = -30;
+if(offset > 1320 * expansion) offset = 1320 * expansion;
 repaint();
-*/
-    }, false);
+scrollOldXPoint = XPoint;
+}*/
 
+	}, false);
 
 
 
@@ -144,18 +179,41 @@ function	draw_canvas() {
  */
 function repaint(){
 
+	var expansion = parseFloat(document.diagram.expansion.value);
+	var offset = parseInt(document.diagram.offset.value) * expansion;
+
 	ctx.beginPath();
 
 	ctx.clearRect(0,0,1500,400);
 	draw_canvas();
 
+	var DiaT = new Array();
+	var rowIds = jQuery("#list").jqGrid('getDataIDs');
+	for (var i = 0; i < rowIds.length; i++) {
 
-/*
-DiaT.forEach(function(a){
-ctx.moveTo((a.DepartureTimeSecond/60)*expansion-offset, 20);
-ctx.lineTo((a.ArrivalTimeSecond/60)*expansion-offset, 380);
-});
-*/
+		var row = $('#list').getRowData(rowIds[i]);
+
+		for (var keyString in row) {
+			if(row[keyString].match(/input/)) {
+				alert("編集中のデータがあります。\nEnterで確定して下さい。");
+				return false;
+			}
+		}
+
+		DiaT.push(row);
+
+	}
+
+	DiaT.forEach(function(a){
+
+		var DepartureTimeSecond = parseInt(a.departure_time.substr(0, 2))*3600+parseInt(a.departure_time.substr(3, 5))*60;
+		var ArrivalTimeSecond = parseInt(a.arrival_time.substr(0, 2))*3600+parseInt(a.arrival_time.substr(3, 5))*60;
+
+		ctx.moveTo((DepartureTimeSecond/60)*expansion-offset, 20);
+		ctx.lineTo((ArrivalTimeSecond/60)*expansion-offset, 380);
+
+	});
+
 	ctx.stroke();
 
 }
@@ -443,29 +501,7 @@ var scrollFlg = 0;
 
     
     
-    
-    canvas.addEventListener('mousemove', function(e){
-            var rect = e.target.getBoundingClientRect();
-            if(DeparturePoint != 0){
-                mouseX = e.clientX - rect.left;
-                mouseY = e.clientY - rect.top;
-                repaint();
-                ctx.beginPath();
-                ctx.moveTo(DeparturePoint, 20);
-                ctx.lineTo(mouseX, mouseY);
-                ctx.stroke();
-            }
-            if(scrollFlg == 1){
-                var XPoint = e.clientX - rect.left;
-                if( scrollOldXPoint == 0){ scrollOldXPoint = XPoint;}
-                document.diagram.offset.value = parseInt(document.diagram.offset.value) + scrollOldXPoint - XPoint;
-                offset += (scrollOldXPoint - XPoint) * expansion;
-                if(offset < -30) offset = -30;
-                if(offset > 1320 * expansion) offset = 1320 * expansion;
-                repaint();
-                scrollOldXPoint = XPoint;
-            }
-    }, false);
+   
 
 
 
