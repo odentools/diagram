@@ -482,11 +482,13 @@ function register() {
 
 	var postData = {'RouteListT':RouteListT, 'DiaGroupT':DiaGroupT, 'DiaT':DiaT};
 
+console.log(postData);
+
 	$.ajax({
 		
 		type: "POST",
-		url: "http://oecu.pw/db/T.php",
-		async: false, // ブラウザロック有効
+		//url: "http://oecu.pw/db/T.php",
+		//async: false, // ブラウザロック有効
 		data: postData,
 		dataType: "text",
 
