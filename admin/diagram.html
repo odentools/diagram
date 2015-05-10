@@ -1,61 +1,98 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta http-equiv="Content-Language" content="ja" />
-        <meta http-equiv="Content-Style-Type" content="text/css" />
-        <meta http-equiv="Content-Script-Type" content="text/javascript" />
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js"></script>
-        <title>Canvas</title>
-        <!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
-    </head>
-    <body>
-        <form name="diagram">
-        <table>
-        <tr>
-            <td valign="top">
-                <div align ="right">所要時間<input type="text" name="moveTime" size="6">分</div>
-                <div align ="right">オフセット<input type="range" name="offset" value="420" size="6" min="-30" max="1320" onChange="changeInput();"></div>
-                <div align ="right">拡大率<input type="range" name="expansion" value="1" size="6" min="0.7" max="8" step="0.1" onChange="changeInput();"></div>
-                <canvas id="canvassample" width="1040" height="400"></canvas>
-                <input type="button" onClick="register()" value="登録">
-            </td>
-            <td valign="top" weidth="400">
-                <table rules=none><tbody id="times">
-                    <tr>
-                        <td width="55"><input type="button" value="sort" onclick="sort()"></td>
-                        <td width="160"><div style="text-align:center">出発地点</div></td>
-                        <td width="20"></td>
-                        <td width="160"><div style="text-align:center">到着地点</div></td>
-                        <td width="300"><div style="text-align:center">備考</div></td>
-                    </tr>
-                </tbody></table>
-            </td>
-        </tr>
-        </table>
-        <div>路線名：
-        <select name="RouteNameList" id="RouteName" onChange="routeNameChange(this);">
-            <option Value="-1">新規登録</option>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+	<title>ダイアグラム管理</title>
 
-        </select>
-        <input type="text" name="RouteNameNew">
-        </div>
-        <div>
-        ダイヤグループ：<select name="DiaNameList" id="DiaName" onChange="DiaNameChange(this);">
-            <option value="-1">新規登録</option>
-        </select>
-        <input type="text" name="DiaNameNew">
-        </div>
-<div>
-        運営：<input type="text" name="Management">
-        出発地点：<input type="text" name="DepartureLocation">
-        到着地点：<input type="text" name="ArrivalLocation">
+	<link type="text/css" media="screen" href="css/ui-lightness/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" />
+	<link type="text/css" media="screen" href="css/ui.jqgrid.css" rel="stylesheet" />
+	<script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.9.2.custom.min.js"></script>
+	<script type="text/javascript" src="js/jquery.jqGrid.min.js" ></script>
+	<script type="text/javascript" src="js/i18n/grid.locale-ja.js" ></script>
+	<script type="text/javascript" src="diagram.js"></script>
 
+	<script type="text/javascript">
+	jQuery(document).ready(function()
+	{
+		jQuery("#list").jqGrid({
+			editurl: 'clientArray',
+			datatype: "local",
+			colNames:['出発時刻', '到着時刻', '備考'],
+			colModel:[
+				{index:'departure_time', name:'departure_time', width:100, editable:true, align:'center', sortable:false, resizable:false, frozen:true },
+				{index:'arrival_time', name:'arrival_time', width:100, editable:true, align:'center', sortable:false, resizable:false, frozen:true },
+				{index:'note', name:'note', width:250, editoptions:{maxlength:50}, editable:true, align:'center', sortable:false, resizable:false, frozen:true }
+			],
+			width: 450,
+			height: 'auto',
+			cellEdit: true,
+			cellsubmit: 'clientArray',
+			afterEditCell: function (rowid, cellname, value, iRow, iCol)
+			{
+				if(cellname != "note") {
+					var input = document.getElementById(iRow+"_"+cellname);
+					input.setAttribute("type", "time");
+					input.setAttribute("step", "60");
+				}
+			}
 
-</div>
-        </form>
-        <script src="diagram.js"></script>
-    </body>
+		});
+	});
+	</script>
+
+</head>
+<body>
+
+	<form name="diagram">
+	<table border="0">
+
+	<tr>
+	<td>
+		<div>路線名：
+			<select name="RouteNameList" id="RouteName" onChange="routeNameChange(this);">
+				<option Value="-1">新規登録</option>
+			</select>
+			<input type="text" name="RouteNameNew">
+		</div>
+
+		<div>ダイヤグループ：
+			<select name="DiaNameList" id="DiaName" onChange="diaNameChange(this);">
+				<option value="-1">新規登録</option>
+			</select>
+			<input type="text" name="DiaNameNew">
+		</div>
+
+		<div>
+			運営：<input type="text" name="Management">
+			出発地点：<input type="text" name="DepartureLocation">
+			到着地点：<input type="text" name="ArrivalLocation">
+		</div>
+	</td>
+	<td rowspan="3" valign="top">
+		<!-- jqGrid -->
+		<table id="list"></table>
+	</td>
+	</tr>
+
+	<tr>
+	<td>
+		<canvas id="diagram_canvas" width="1040" height="400"></canvas>
+	</td>
+	</tr>
+
+	<tr>
+	<td>
+		<div align ="right">所要時間<input type="text" name="moveTime" size="6">分</div>
+		<div align ="right">オフセット<input type="range" name="offset" value="420" size="6" min="-30" max="1320" onChange="repaint();"></div>
+		<div align ="right">拡大率<input type="range" name="expansion" value="1" size="6" min="0.7" max="8" step="0.1" onChange="repaint();"></div>
+		<input type="button" onClick="register()" value="登録">
+	</td>
+	</tr>
+	</table>
+	</form>
+
+</body>
 </html>
