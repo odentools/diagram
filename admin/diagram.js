@@ -1,6 +1,95 @@
+const SERVER_URL = "http://oecu.pw/"
+const SERVER_APIURL = SERVER_URL+"api/1/";
+
 jQuery(document).ready(function()
 {
-	ctx = document.getElementById('diagram_canvas').getContext('2d');
+	var canvas = document.getElementById('diagram_canvas');
+	ctx = canvas.getContext('2d');
+
+
+	var DeparturePoint = 0;
+	var ArrivalPoint = 0;
+
+	// キャンバスのイベントリスナー (クリック)
+	canvas.addEventListener('click', function(e){
+		
+		var expansion = parseFloat(document.diagram.expansion.value);
+		var offset = parseInt(document.diagram.offset.value) * expansion;
+		
+		var rect = e.target.getBoundingClientRect();
+		var mouseX = e.clientX - rect.left;
+		var mouseY = e.clientY - rect.top;
+
+		// 出発時刻が未確定な場合
+		if(DeparturePoint == 0) {
+
+			if(mouseY >= 10 && mouseY <= 30 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445) {
+
+				DeparturePoint = mouseX;
+				
+				// 所要時間が確定している場合
+				if(document.diagram.moveTime.value != 0) {
+					ArrivalPoint = mouseX + parseInt(document.diagram.moveTime.value)*expansion;
+				}
+
+			} else {
+
+				// 下から上にダイアを引く為に実装
+				if(mouseY >= 370 && mouseY <= 390 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445) {
+					ArrivalPoint = mouseX;
+				}
+
+			}
+
+		}
+		
+		// 到着時刻が確定している場合
+		if(ArrivalPoint != 0) {
+
+			// 画面座標から時刻を算出
+			var DepartureHour = Math.floor(((DeparturePoint+offset)/expansion+5)/60);
+			var DepartureMinute = Math.floor((((DeparturePoint+offset)/expansion+5)/60-DepartureHour)*60/10)*10;
+			var ArrivalHour = Math.floor(((ArrivalPoint+offset)/expansion+5)/60);
+			var ArrivalMinute = Math.floor((((ArrivalPoint+offset)/expansion+5)/60-ArrivalHour)*60/10)*10;
+
+			// 所要時間が確定している場合
+			/*
+			if(document.diagram.moveTime.value != 0) {
+				if(ArrivalMinute >= 60){
+					ArrivalHour+=1;
+					ArrivalMinute -= 60;
+				}
+			}
+			*/
+
+			DeparturePoint = 0;
+			ArrivalPoint = 0;
+			
+			console.log(DepartureHour+":"+DepartureMinute);
+			console.log(ArrivalHour+":"+ArrivalMinute);
+
+		}
+
+
+
+
+
+/*
+
+
+
+repaint();
+*/
+    }, false);
+
+
+
+
+
+
+
+
+
 
 	draw_canvas();
 	getRouteList();
@@ -12,8 +101,8 @@ jQuery(document).ready(function()
  */
 function	draw_canvas() {
 
-    var expansion = parseFloat(document.diagram.expansion.value);
-    var offset = parseInt(document.diagram.offset.value) * expansion;
+	var expansion = parseFloat(document.diagram.expansion.value);
+	var offset = parseInt(document.diagram.offset.value) * expansion;
 
 	ctx.textAlign = "center";
 	ctx.beginPath();
@@ -79,7 +168,7 @@ function getRouteList() {
 	$.ajax({
 
 		type: "GET",
-		url: "http://oecu.pw/api/1/RouteList.json?min",
+		url: SERVER_APIURL+"RouteList.json?min",
 		async: false, // ブラウザロック有効
 		dataType: "json",
 
@@ -128,7 +217,7 @@ function routeNameChange(obj) {
 		$.ajax({
 
 			type: "GET",
-			url: "http://oecu.pw/api/1/RouteList.json?id="+obj.options[obj.selectedIndex].value,
+			url: SERVER_APIURL+"RouteList.json?id="+obj.options[obj.selectedIndex].value,
 			async: false, // ブラウザロック有効
 			dataType: "json",
 
@@ -149,7 +238,7 @@ function routeNameChange(obj) {
 				$.ajax({
 
 					type: "GET",
-					url: "http://oecu.pw/api/1/DiaGroup.json?RouteListT_ID_="+obj.options[obj.selectedIndex].value,
+					url: SERVER_APIURL+"DiaGroup.json?RouteListT_ID_="+obj.options[obj.selectedIndex].value,
 					async: false, // ブラウザロック有効
 					dataType: "json",
 
@@ -220,7 +309,7 @@ function diaNameChange(obj) {
 		$.ajax({
 			
 			type: "GET",
-			url: "http://oecu.pw/api/1/Dia.json?DiaGroupT_ID_="+obj.options[obj.selectedIndex].value,
+			url: SERVER_APIURL+"Dia.json?DiaGroupT_ID_="+obj.options[obj.selectedIndex].value,
 			async: false, // ブラウザロック有効
 			dataType: "json",
 
@@ -305,7 +394,7 @@ function register() {
 	$.ajax({
 		
 		type: "POST",
-		url: "http://oecu.pw/db/T.php",
+		url: SERVER_URL+"db/T.php",
 		async: false, // ブラウザロック有効
 		data: postData,
 		dataType: "text",
@@ -353,56 +442,7 @@ var scrollFlg = 0;
 
 
     
-    canvas.addEventListener('click', function(e){
-            var rect = e.target.getBoundingClientRect();
-            mouseX = e.clientX - rect.left;
-            mouseY = e.clientY - rect.top;
-            if(DeparturePoint == 0){
-                if(mouseY >=10 && mouseY <=30 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445){
-                    if(document.diagram.moveTime.value == 0){
-                        DeparturePoint = mouseX;
-                    }else{
-                        DeparturePoint = mouseX;
-                        ArrivalPoint = mouseX + parseInt(document.diagram.moveTime.value)*expansion;
-                    }
-                }
-            }else{
-                if(mouseY >=370 && mouseY <=390 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445){
-                    ArrivalPoint = mouseX;
-                }
-            }
-
-            
-            if(ArrivalPoint != 0){
-                var DepartureHour = Math.floor(((DeparturePoint+offset)/expansion+5)/60);
-                var DepartureMinute = Math.floor((((DeparturePoint+offset)/expansion+5)/60-DepartureHour)*60/10)*10;
-                var ArrivalHour = Math.floor(((ArrivalPoint+offset)/expansion+5)/60);
-                var ArrivalMinute = Math.floor((((ArrivalPoint+offset)/expansion+5)/60-ArrivalHour)*60/10)*10;
-                if(document.diagram.moveTime.value != 0){
-                    if(ArrivalMinute >= 60){
-                        ArrivalHour+=1;
-                        ArrivalMinute -= 60;
-                    }
-                }
-
-                DiaT.push({DepartureTime:DepartureHour + ":" + DepartureMinute + ":00", ArrivalTime:ArrivalHour + ":" + ArrivalMinute + ":00", DepartureTimeSecond:DepartureHour*3600 + DepartureMinute*60, ArrivalTimeSecond:ArrivalHour*3600 + ArrivalMinute*60, Note:""});
-                var element = document.createElement("tr");
-                var template = '<td width="55"><input type="button" value="delete" onClick="deletePoint(Num)"></td><td width="160"><input type="text" name="DepartureHourNum" value="DepartureHourVal" onchange="changeTime(Num)" size="6">:<input type="text" name="DepartureMinuteNum" value="DepartureMinuteVal" onchange="changeTime(Num)" size="6"></td><td width="20">→</td><td width="160"><input type="text" name="ArrivalHourNum" value="ArrivalHourVal" onchange="changeTime(Num)" size="6">:<input type="text" name="ArrivalMinuteNum" value="ArrivalMinuteVal" onchange="changeTime(Num)" size="6"></td><td width="300"><input type="text" name="noteNum" value="" onchange="changeTime(Num)"></td>'
-                template = template.replace("DepartureHourVal",DepartureHour);
-                template = template.replace("DepartureMinuteVal",DepartureMinute);
-                template = template.replace("ArrivalHourVal",ArrivalHour);
-                template = template.replace("ArrivalMinuteVal",ArrivalMinute);
-                template = template.replace(/Num/g, rowCount);
-                element.id = "rowc" + rowCount;
-                element.innerHTML = template;
-                document.getElementById("times").appendChild(element);
-                DeparturePoint = 0;
-                ArrivalPoint = 0;
-                rowCount++;
-            }
-            repaint();
-
-    }, false);
+    
     
     canvas.addEventListener('mousemove', function(e){
             var rect = e.target.getBoundingClientRect();
