@@ -10,27 +10,27 @@ var app = angular.module('SignageApp', ['Diagram.services']);
 
 // ディレクティブ定義: SlabText (jQueryプラグイン)
 app.directive('slabText', function($timeout, $compile) {
-    return {
-        link: function(scope, element, attrs){
-            // 黒魔法 (随時書き換えられる要素に対して適用させたい＆特殊なjQueryプラグインであるため)
-            var $elem = $('<div>').html(element.html());
-            if (element.data('tmpl') == null) {
-                element.data('tmpl', $elem.html());
-            }
-            var up = function() {
-                // HTMLテンプレートをコンパイルして注入
-                var $c = $compile($elem)(scope);
-                $(element).html($c.html());
-                // SLABTEXTを適用
-                $(element).slabText({
-                    minCharsPerLine: 10
-                });
-                // タイマーを開始
-                $timeout(up, 500);
-            };
-            up();
-        }
-    };
+	return {
+		link: function(scope, element, attrs){
+			// 黒魔法 (随時書き換えられる要素に対して適用させたい＆特殊なjQueryプラグインであるため)
+			var $elem = $('<div>').html(element.html());
+			if (element.data('tmpl') == null) {
+				element.data('tmpl', $elem.html());
+			}
+			var up = function() {
+				// HTMLテンプレートをコンパイルして注入
+				var $c = $compile($elem)(scope);
+				$(element).html($c.html());
+				// SLABTEXTを適用
+				$(element).slabText({
+					minCharsPerLine: 10
+				});
+				// タイマーを開始
+				$timeout(up, 500);
+			};
+			up();
+		}
+	};
 });
 
 // フィルタ定義: zpadding
@@ -47,7 +47,7 @@ app.filter('zpadding', function() {
 	時刻表ページ用コントローラ
 **/
 app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagrams, Helpers) {
-    // 当該路線のデータ
+	// 当該路線のデータ
 	$scope.route = null;
 	// 時刻表データ (便の配列)
 	$scope.diagrams = [];
@@ -114,7 +114,7 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 		}
 	};
 
-    /* ---- */
+	/* ---- */
 
 	// $scope.routeId を監視 (通常はng-initによってHTML読み込み時にセットされる)
 	$scope.$watch('routeId', function(new_value, old_value){
@@ -125,11 +125,11 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 	});
 
 	// 更新タイマーを開始
-    var func_update = function() {
+	var func_update = function() {
 		// 次の便および残りの便を更新
 		$scope.updateDiagrams();
-        // タイマーを再始動
-        $timeout(func_update, 1000);
-    };
-    $timeout(func_update, 1000);
+		// タイマーを再始動
+		$timeout(func_update, 1000);
+	};
+	$timeout(func_update, 1000);
 });
