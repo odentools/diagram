@@ -32,12 +32,16 @@
 			cellsubmit: 'clientArray',
 			multiselect: true,
 			afterEditCell: function (rowid, cellname, value, iRow, iCol)
-			{
+			{console.log(rowid);
 				if(cellname != "note") {
 					var input = document.getElementById(iRow+"_"+cellname);
 					input.setAttribute("type", "time");
 					input.setAttribute("step", "60");
 				}
+			},onCellSelect: function(id,iCol) {
+
+				repaint();
+
 			}
 
 		});
@@ -75,6 +79,7 @@
 	<td rowspan="3" valign="top">
 		<!-- jqGrid -->
 		<table id="list"></table>
+		<input type="button" id="deleteButton" value="削除" />
 	</td>
 	</tr>
 

@@ -164,6 +164,29 @@ jQuery(document).ready(function()
         }
         repaint();
     }, false);
+	
+	$("#deleteButton").click(function(){
+
+		// 選択されている行ID配列の取得
+		var arrrows = $("#list").getGridParam("selarrrow");
+
+		if(arrrows.length == 0)  {
+			alert("削除する行を選択してください。");
+		} else {
+	
+			// 選択行の削除
+			// グリッドの下の方から削除していかないと、選択行すべて削除できない。
+			// BUG: http://www.trirand.com/blog/?page_id=393/bugs/delrowdata-bug-on-grid-with-multiselect
+			var len = arrrows.length;
+
+			for(i = len-1; i >= 0; i--)
+				$("#list").delRowData(arrrows[i]);
+
+		}
+		
+		return true;
+
+	});
 
 	draw_canvas();
 	getRouteList();
@@ -218,6 +241,8 @@ function	draw_canvas() {
  */
 function repaint(){
 
+jQuery("#list").saveRow("1", false);
+
 	var expansion = parseFloat(document.diagram.expansion.value);
 	var offset = parseInt(document.diagram.offset.value) * expansion;
 
@@ -234,7 +259,7 @@ function repaint(){
 
 		for (var keyString in row) {
 			if(row[keyString].match(/input/)) {
-				alert("編集中のデータがあります。\nEnterで確定して下さい。");
+				//alert("編集中のデータがあります。\nEnterで確定して下さい。");
 				return false;
 			}
 		}
@@ -512,12 +537,7 @@ function register() {
 }
 
 
-
-
-
-
 /*
-
 
 これはリペイントすれば行ける。
 function changeTime(num){
@@ -548,6 +568,5 @@ function deletePoint(num) {
 	repaint();
 
 }
-
 
 */
