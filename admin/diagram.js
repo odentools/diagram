@@ -1,6 +1,8 @@
 const SERVER_URL = "http://oecu.pw/"
 const SERVER_APIURL = SERVER_URL+"api/1/";
 
+var selected;
+
 jQuery(document).ready(function()
 {
 	var canvas = document.getElementById('diagram_canvas');
@@ -162,7 +164,7 @@ jQuery(document).ready(function()
         if( e.button == 2){
             DeparturePoint = 0;
         }
-        repaint();
+		repaint();
     }, false);
 	
 	$("#deleteButton").click(function(){
@@ -241,7 +243,9 @@ function	draw_canvas() {
  */
 function repaint(){
 
-jQuery("#list").saveRow("1", false);
+	$('#'+selected).trigger(
+		jQuery.Event( 'keydown', { keyCode: 13, which: 13 } )
+	);
 
 	var expansion = parseFloat(document.diagram.expansion.value);
 	var offset = parseInt(document.diagram.offset.value) * expansion;
@@ -538,19 +542,6 @@ function register() {
 
 
 /*
-
-これはリペイントすれば行ける。
-function changeTime(num){
-
-    DiaT[num].DepartureTime = document.diagram["DepartureHour"+num].value + ":" + document.diagram["DepartureMinute"+num].value +":00";
-    DiaT[num].ArrivalTime = document.diagram["ArrivalHour"+num].value + ":" + document.diagram["ArrivalMinute"+num].value +":00";
-    DiaT[num].DepartureTimeSecond = parseInt(document.diagram["DepartureHour"+num].value)*3600 + parseInt(document.diagram["DepartureMinute"+num].value)*60;
-    DiaT[num].ArrivalTimeSecond = parseInt(document.diagram["ArrivalHour"+num].value)*3600 + parseInt(document.diagram["ArrivalMinute"+num].value)*60;
-    DiaT[num].Note = document.diagram["note"+num].value;
-
-    repaint();
-
-}
 
 グリッドの基本機能で実装する
 function deletePoint(num) {

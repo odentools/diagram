@@ -32,12 +32,15 @@
 			cellsubmit: 'clientArray',
 			multiselect: true,
 			afterEditCell: function (rowid, cellname, value, iRow, iCol)
-			{console.log(rowid);
+			{
 				if(cellname != "note") {
 					var input = document.getElementById(iRow+"_"+cellname);
 					input.setAttribute("type", "time");
 					input.setAttribute("step", "60");
 				}
+				
+				selected = iRow+"_"+cellname;
+				
 			},onCellSelect: function(id,iCol) {
 
 				repaint();
