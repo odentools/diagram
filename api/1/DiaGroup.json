@@ -4,12 +4,12 @@
  * DiaGroupTを扱います
  * レスポンス JSON
  ****************************************************/
- 
- 	include_once("./json.php");
-	$json = new JSON();
 
-	include_once("../../lib/lib.php");
-	include_once("../../db/SQL_Session.php");
+	include_once(dirname(__FILE__) ."/../../db/SQL_Session.php"); 
+	include_once(dirname(__FILE__) ."/../../lib/lib.php");
+ 	include_once(dirname(__FILE__) ."/json.php");
+
+	$json = new JSON();
 
 	$mysqli = new SQL_Session();
 
@@ -28,7 +28,7 @@
 
 		$BPrm = array(0=>$_GET["RouteListT_ID_"]);
 	
-		$result = $mysqli->BSelect("DiaGroupT", "RouteListT_ID_=?", "s", $BPrm);
+		$result = $mysqli->BSelect("DiaGroupT", $Select, "RouteListT_ID_=?", "s", $BPrm);
 
 		$json->PushResult($result, "DiaGroup");
 
@@ -36,7 +36,7 @@
 
 		$query = "select ".$Select." from DiaGroupT";
 
-		$result = $mysqli->GetRecord($query);
+		$result = $mysqli->BSelect("DiaGroupT", $Select);
 
 		$json->PushResult($result, "DiaGroup");
 

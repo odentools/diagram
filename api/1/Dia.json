@@ -5,10 +5,10 @@
  * レスポンス JSON
  ****************************************************/
 
-	include_once("../../db/SQL_Session.php"); 
- 	include_once("../../lib/lib.php");
+	include_once(dirname(__FILE__) ."/../../db/SQL_Session.php"); 
+ 	include_once(dirname(__FILE__) ."/../../lib/lib.php");
+	include_once(dirname(__FILE__) ."/json.php");
 
-	include_once("json.php");
 	$json = new JSON();
 
 	$mysqli = new SQL_Session();
@@ -28,7 +28,7 @@
 
 		$BPrm = array(0=>$_GET["DiaGroupT_ID_"]);
 	
-		$result = $mysqli->BSelect("DiaT", "DiaGroupT_ID_=?", "s", $BPrm);
+		$result = $mysqli->BSelect("DiaT", $Select, "DiaGroupT_ID_=?", "s", $BPrm);
 
 		$json->PushResult($result,"Dia");
 
@@ -36,7 +36,7 @@
 
 		$query = "select ".$Select." from DiaT";
 
-		$result = $mysqli->GetRecord($query);
+		$result = $mysqli->BSelect("DiaT",$Select);
 
 		$json->PushResult($result,"Dia");
 

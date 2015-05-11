@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head>
+	<meta charset="shift_jis">
+	<link type="text/css" media="screen" href="css/ui-lightness/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" />
+	<link type="text/css" media="screen" href="css/ui.jqgrid.css" rel="stylesheet" />
+	<script type="text/javascript" src="js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.9.2.custom.min.js"></script>
+	<script type="text/javascript" src="js/jquery.jqGrid.min.js" ></script>
+	<script type="text/javascript" src="js/i18n/grid.locale-ja.js" ></script>
+	<script type="text/javascript"></script>
+
+	<script type="text/javascript">
+	jQuery(document).ready(function()
+	{
+		jQuery("#list").jqGrid({
+			editurl: 'clientArray',
+			datatype: "local",
+			colNames:['出発時刻', '到着時刻', '備考'],
+			colModel:[
+				{index:'departure_time', name:'departure_time', width:100, editable:true, align:'center', sortable:false, resizable:false, frozen:true },
+				{index:'arrival_time', name:'arrival_time', width:100, editable:true, align:'center', sortable:false, resizable:false, frozen:true },
+				{index:'note', name:'note', width:250, editoptions:{maxlength:50}, editable:true, align:'center', sortable:false, resizable:false, frozen:true }
+			],
+			width: 450,
+			height: 'auto',
+			cellEdit: true,
+			cellsubmit: 'clientArray',
+			afterEditCell: function (rowid, cellname, value, iRow, iCol)
+			{
+				if(cellname != "note") {
+					var input = document.getElementById(iRow+"_"+cellname);
+					input.setAttribute("type", "time");
+					input.setAttribute("step", "60");
+				}
+			}
+
+		}); 
+
+	$.ajax({
+		type: "GET",
+		url: "http://oecu.pw/api/1/Dia.json?DiaGroupT_ID_=1",
+		async: false, //ブラウザロック有効
+		dataType: "json",
+		success: function(data, dataType) {
+
+			data.Dia.forEach(function(val) {
+
+				$("#list").addRowData(undefined, {
+					departure_time:val.DepartureTime.substr(0, 5), 
+					arrival_time:val.ArrivalTime.substr(0, 5), 
+					note:val.Note
+				});
+
+			});
+
+		},
+		error: function(res, textStatus, xhr) {
+			
+			if(res.status==404) {
+				alert("ダイヤがありません\n登録して下さい");
+			} else {
+				alert("サーバーとの通信に失敗しました。\nCode: " + res.status);
+			}
+			
+			return false;
+
+		}
+	});
+	
+	var values = new Array();
+	var rowIds = jQuery("#list").jqGrid('getDataIDs');
+	for (var i = 0; i < rowIds.length; i++) {
+		var row = $('#list').getRowData(rowIds[i]);
+		values.push(row);
+	}
+		
+	console.log({DiaT:values});
+
+	}); // jQuery
+
+	</script>
+</head>
+<body>
+	<table id="list"></table>
+</body>
+</html>
