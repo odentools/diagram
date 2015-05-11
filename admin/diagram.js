@@ -539,25 +539,3 @@ function register() {
 	});
 
 }
-
-
-/*
-
-グリッドの基本機能で実装する
-function deletePoint(num) {
-
-	delete DiaT[num];
-
-	//前の処理を待ってから実行する
-	window.setTimeout(
-		function(){
-			document.getElementById("times").removeChild(document.getElementById("rowc" + num));
-		},
-		0
-	);
-
-	repaint();
-
-}
-
-*/
