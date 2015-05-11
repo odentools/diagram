@@ -12,9 +12,9 @@
 		<script src="js/angular/angular-resource.min.js"></script>
 		<script src="js/signage_app.js"></script>
 	</head>
-	<body ng-app="SignageApp" ng-controller="DiagramCtrl">
+	<body ng-app="SignageApp" ng-controller="DiagramCtrl" ng-init="routeId = 2;">
 		<header>
-	    	<div>寝屋川キャンパス&nbsp;&nbsp;行</div>
+	    	<div>{{route.ArrivalLocation}}&nbsp;&nbsp;行</div>
 		</header>
 		<div>
 			{{next_dia.remain_date}}
