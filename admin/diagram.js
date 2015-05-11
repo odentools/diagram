@@ -515,7 +515,7 @@ function register() {
 		DiaName:document.diagram.DiaNameNew.value
 	};
 
-	//var postData = {'RouteListT':RouteListT, 'DiaGroupT':DiaGroupT, 'DiaT':DiaT};
+	var postData = {'RouteListT':RouteListT, 'DiaGroupT':DiaGroupT, 'DiaT':DiaT};
 
 	$.ajax({
 		
@@ -538,4 +538,42 @@ function register() {
 
 	});
 
+}
+
+/* ----------------------------------------
+ * 重複を排除しながらpushする関数
+ * ---------------------------------------- */
+function PushArray(array, value) {
+
+	// 存在しない場合、配列にpushする
+	if(! IsExists(array, value)) {
+		
+		array.push(value);
+		
+	}
+	
+	return true;
+	
+}
+
+/* ----------------------------------------
+ * 重複チェック
+ * ---------------------------------------- */
+function IsExists(array, value) {
+
+	// 配列の最後までループ
+	for (var i =0, len = array.length; i < len; i++) {
+
+		if (value == array[i]) {
+
+			// 存在したらtrueを返す
+			return true;
+
+		}
+
+	}
+	
+	// 存在しない場合falseを返す
+	return false;
+	
 }

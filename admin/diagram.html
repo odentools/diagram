@@ -43,6 +43,32 @@
 				
 			},onCellSelect: function(id,iCol) {
 
+				// チェックボックスを強制適応
+
+				// 選択されている行IDのを取得
+				var arrrows = $("#list").getGridParam("selarrrow");
+				var element = document.getElementById("jqg_list_"+id);
+
+				element.checked = !element.checked;
+
+				if(element.checked) {
+
+					PushArray(arrrows, id);
+
+				} else {
+		
+					for(i=0; i<arrrows.length; i++) {
+
+						if(arrrows[i] == id)
+							arrrows.splice(i--, 1);
+
+					}
+
+				}
+
+				// selarrrowのパラメータを設定
+				jQuery("#list").jqGrid('setGridParam',{selarrrow:arrrows});	
+
 				repaint();
 
 			}
