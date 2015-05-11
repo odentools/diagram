@@ -50,15 +50,19 @@ services.factory('Routes', ['$http', function($http) {
 // サービス定義: ダイアグラム リスト
 services.factory('Diagrams', ['$http', function($http) {
 	var service = {
-		fetch: function(dia_group_id, callback) {
-			// コールバックを生成
-			var success_callback = function(data, status, headers, config) {
-				var diagrams = data.Dia;
-				(callback(diagrams));
-			};
+		// ダイアグラムの取得
+		fetch: function(dia_group_id, callback, opt_err_callback) {
 			// リクエスト
 			$http.get('http://oecu.pw/api/1/Dia.json?DiaGroupT_ID_=' + dia_group_id)
-                .success(success_callback);
+                .success(function(data, status, headers, config) {
+					var diagrams = data.Dia;
+					(callback(diagrams));
+				})
+				.error(function(data, status, headers, config) {
+					if (opt_err_callback != null) {
+						(opt_err_callback(data));
+					}
+				});
 		}
 	};
 	return service;
