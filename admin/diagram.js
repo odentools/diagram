@@ -45,19 +45,33 @@ jQuery(document).ready(function()
 		// 到着時刻が確定している場合
 		if(arrivalPoint != 0 || document.diagram.moveTime.value != 0) {
 
-			// 画面座標から時刻を算出
-			var departureHour = Math.floor(((departurePoint+offset)/expansion+5)/60);
-			var departureMinute = Math.floor((((departurePoint+offset)/expansion+5)/60-departureHour)*60/10)*10;
-			var arrivalHour;
-			var arrivalMinute;
-			if(document.diagram.moveTime.value == 0){
-				arrivalHour = Math.floor(((arrivalPoint+offset)/expansion+5)/60);
-				arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion+5)/60-arrivalHour)*60/10)*10;
+			if(parseFloat(document.diagram.expansion.value) < 5){
+				// 画面座標から時刻を算出
+				var departureHour = Math.floor(((departurePoint+offset)/expansion+5)/60);
+				var departureMinute = Math.floor((((departurePoint+offset)/expansion+5)/60-departureHour)*60/10)*10;
+				var arrivalHour;
+				var arrivalMinute;
+				if(document.diagram.moveTime.value == 0){
+					arrivalHour = Math.floor(((arrivalPoint+offset)/expansion+5)/60);
+					arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion+5)/60-arrivalHour)*60/10)*10;
+				} else {
+					drrivalHour = departureHour;
+					drrivalMinute = departureMinute + parseInt(document.diagram.moveTime.value);
+				}
 			} else {
-				drrivalHour = departureHour;
-				drrivalMinute = departureMinute + parseInt(document.diagram.moveTime.value);
+				// 画面座標から時刻を算出
+				var departureHour = Math.floor(((departurePoint+offset)/expansion)/60);
+				var departureMinute = Math.floor((((departurePoint+offset)/expansion)/60-departureHour)*60);
+				var arrivalHour;
+				var arrivalMinute;
+				if(document.diagram.moveTime.value == 0){
+					arrivalHour = Math.floor(((arrivalPoint+offset)/expansion)/60);
+					arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion)/60-arrivalHour)*60);
+				} else {
+					drrivalHour = departureHour;
+					drrivalMinute = departureMinute + parseInt(document.diagram.moveTime.value);
+				}
 			}
-
 			// 時刻のフォーマットを修正
 			while(departureMinute > 60) {
 				departureMinute-=60;
@@ -209,34 +223,34 @@ function draw_canvas() {
 	ctx.beginPath();
 
 	// 横線
-	ctx.moveTo(-offset, 20);
-	ctx.lineTo(1440*expansion-offset, 20);
-	ctx.moveTo(-offset, 380);
-	ctx.lineTo(1440*expansion-offset, 380);
+	ctx.moveTo(-offset, 30);
+	ctx.lineTo(1440*expansion-offset, 30);
+	ctx.moveTo(-offset, 370);
+	ctx.lineTo(1440*expansion-offset, 370);
 
 	// 大目盛
 	for(var i = 0; i <= 1440; i+=60){
-		ctx.moveTo(i*expansion-offset, 5);
-		ctx.lineTo(i*expansion-offset, 35);
-		ctx.moveTo(i*expansion-offset, 365);
-		ctx.lineTo(i*expansion-offset, 395);
+		ctx.moveTo(i*expansion-offset, 15);
+		ctx.lineTo(i*expansion-offset, 45);
+		ctx.moveTo(i*expansion-offset, 355);
+		ctx.lineTo(i*expansion-offset, 385);
 	}
 
 	// 中目盛
 	for(var i = 0; i <= 1440; i+=10){
-		ctx.moveTo(i*expansion-offset, 10);
+		ctx.moveTo(i*expansion-offset, 20);
 		ctx.lineTo(i*expansion-offset, 30);
-		ctx.moveTo(i*expansion-offset, 370);
-		ctx.lineTo(i*expansion-offset, 390);
+		ctx.moveTo(i*expansion-offset, 360);
+		ctx.lineTo(i*expansion-offset, 380);
 	}
 
 	if( expansion > 5 ){
 		// 小目盛
 		for(var i = 0; i <= 1440; i+=1){
-			ctx.moveTo(i*expansion-offset, 15);
-			ctx.lineTo(i*expansion-offset, 25);
-			ctx.moveTo(i*expansion-offset, 375);
-			ctx.lineTo(i*expansion-offset, 385);
+			ctx.moveTo(i*expansion-offset, 25);
+			ctx.lineTo(i*expansion-offset, 35);
+			ctx.moveTo(i*expansion-offset, 365);
+			ctx.lineTo(i*expansion-offset, 375);
 		}
 	}
 
