@@ -22,8 +22,8 @@
 			datatype: "local",
 			colNames:['出発時刻', '到着時刻', '備考'],
 			colModel:[
-				{index:'departure_time', name:'departure_time', width:100, editable:true, align:'center', sortable:false, resizable:false, frozen:true },
-				{index:'arrival_time', name:'arrival_time', width:100, editable:true, align:'center', sortable:false, resizable:false, frozen:true },
+				{index:'departureTime', name:'departureTime', width:100, editable:true, align:'center', sortable:false, resizable:false, frozen:true },
+				{index:'arrivalTime', name:'arrivalTime', width:100, editable:true, align:'center', sortable:false, resizable:false, frozen:true },
 				{index:'note', name:'note', width:250, editoptions:{maxlength:50}, editable:true, align:'center', sortable:false, resizable:false, frozen:true }
 			],
 			width: 450,
@@ -86,23 +86,23 @@
 	<tr>
 	<td>
 		<div>路線名：
-			<select name="RouteNameList" id="RouteName" onChange="routeNameChange(this);">
+			<select name="routeNameList" id="routeName" onChange="routeNameChange(this);">
 				<option Value="-1">新規登録</option>
 			</select>
-			<input type="text" name="RouteNameNew">
+			<input type="text" name="routeNameNew">
 		</div>
 
 		<div>ダイヤグループ：
-			<select name="DiaNameList" id="DiaName" onChange="diaNameChange(this);">
+			<select name="diaNameList" id="diaName" onChange="diaNameChange(this);">
 				<option value="-1">新規登録</option>
 			</select>
-			<input type="text" name="DiaNameNew">
+			<input type="text" name="diaNameNew">
 		</div>
 
 		<div>
-			運営：<input type="text" name="Management">
-			出発地点：<input type="text" name="DepartureLocation">
-			到着地点：<input type="text" name="ArrivalLocation">
+			運営：<input type="text" name="management">
+			出発地点：<input type="text" name="departureLocation">
+			到着地点：<input type="text" name="arrivalLocation">
 		</div>
 	</td>
 	<td rowspan="3" valign="top">
