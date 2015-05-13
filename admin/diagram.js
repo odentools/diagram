@@ -28,7 +28,7 @@ jQuery(document).ready(function()
 		// 出発時刻が未確定な場合
 		if(departurePoint == 0) {
 
-			if(mouseY >= 10 && mouseY <= 30 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445) {
+			if(mouseY >= 10 && mouseY <= 50 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445) {
 
 				departurePoint = mouseX;
 
@@ -36,7 +36,7 @@ jQuery(document).ready(function()
 
 		} else {
 
-			if(mouseY >= 370 && mouseY <= 390 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445) {
+			if(mouseY >= 350 && mouseY <= 390 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445) {
 				arrivalPoint = mouseX;
 			}
 
@@ -304,8 +304,8 @@ function repaint(){
 		var DepartureTimeSecond = parseInt(a.departureTime.substr(0, 2))*3600+parseInt(a.departureTime.substr(3, 5))*60;
 		var ArrivalTimeSecond = parseInt(a.arrivalTime.substr(0, 2))*3600+parseInt(a.arrivalTime.substr(3, 5))*60;
 
-		ctx.moveTo((DepartureTimeSecond/60)*expansion-offset, 20);
-		ctx.lineTo((ArrivalTimeSecond/60)*expansion-offset, 380);
+		ctx.moveTo((DepartureTimeSecond/60)*expansion-offset, 30);
+		ctx.lineTo((ArrivalTimeSecond/60)*expansion-offset, 370);
 
 	});
 
