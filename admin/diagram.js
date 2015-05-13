@@ -118,7 +118,7 @@ jQuery(document).ready(function()
 			repaint();
 
 			ctx.beginPath();
-			ctx.moveTo(departurePoint, 20);
+			ctx.moveTo(departurePoint, 30);
 			ctx.lineTo(mouseX, mouseY);
 			ctx.stroke();
 
@@ -521,9 +521,6 @@ function register() {
 			ArrivalTime:$('#list').getRowData(rowIds[i]).arrivalTime,
 			Note:$('#list').getRowData(rowIds[i]).note
 		};
-			
-//htmlの方では小文字，DBでは大文字なのでここで置換する
-console.log(row);
 
 		for (var keyString in row) {
 			if(row[keyString].match(/input/)) {
