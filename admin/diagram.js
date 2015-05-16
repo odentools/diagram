@@ -573,7 +573,7 @@ function register() {
 /* ----------------------------------------
  * 重複を排除しながらpushする関数
  * ---------------------------------------- */
-rfunction PushArray(array, value) {
+function PushArray(array, value) {
 
 	// 存在しない場合、配列にpushする
 	if(! IsExists(array, value)) {
