@@ -96,6 +96,9 @@ jQuery(document).ready(function()
 				arrivalTime:arrivalHour+":"+arrivalMinute, 
 				note:""
 			});
+			
+			//ここに色変える
+			jQuery("#jqg"+$("#list").getGridParam("records"), "#list").effect("highlight", {}, 2000);
 
 		}
 
