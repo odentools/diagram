@@ -97,7 +97,7 @@ jQuery(document).ready(function()
 				note:""
 			});
 			
-			//ここに色変える
+			// ここに色を変える場合コードを挿入して下さい
 			jQuery("#jqg"+$("#list").getGridParam("records"), "#list").effect("highlight", {}, 2000);
 
 		}
