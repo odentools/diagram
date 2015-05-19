@@ -5,9 +5,6 @@
 	//デバッグ機能 
 	define('DEBUG', FALSE);
 
-	// API デバッグ機能
-	define('APIDEBUG', FALSE);
-
 	if(DEBUG) {
 		ini_set( 'display_errors', 1);
 		error_reporting(-1);
