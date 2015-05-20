@@ -83,7 +83,6 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 				}
 
 				// 時刻表を取得
-				console.log(route);
 				Diagrams.fetch(3, function(diagrams_) {
 					diagrams = diagrams_;
 				});
