@@ -8,31 +8,6 @@
 
 var app = angular.module('SignageApp', ['Diagram.services']);
 
-// ディレクティブ定義: SlabText (jQueryプラグイン)
-app.directive('slabText', function($timeout, $compile) {
-	return {
-		link: function(scope, element, attrs){
-			// 黒魔法 (随時書き換えられる要素に対して適用させたい＆特殊なjQueryプラグインであるため)
-			var $elem = $('<div>').html(element.html());
-			if (element.data('tmpl') == null) {
-				element.data('tmpl', $elem.html());
-			}
-			var up = function() {
-				// HTMLテンプレートをコンパイルして注入
-				var $c = $compile($elem)(scope);
-				$(element).html($c.html());
-				// SLABTEXTを適用
-				$(element).slabText({
-					minCharsPerLine: 5
-				});
-				// タイマーを開始
-				$timeout(up, 100);
-			};
-			up();
-		}
-	};
-});
-
 // ディレクティブ定義: autoResize
 app.directive('autoResize', function($timeout, $compile) {
 	return {
