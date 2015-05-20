@@ -24,14 +24,45 @@ services.factory('Routes', ['$http', function($http) {
 
 		// 路線の取得
 		fetch: function(route_id, callback, opt_err_callback) {
-			// リクエスト
+			// 指定された路線IDの路線をリクエスト
 			$http.get('http://oecu.pw/api/1/RouteList.json?id=' + route_id)
 				.success(function(data, status, headers, config) {
 					if (data.RouteList == null || data.RouteList.length <= 0) {
 						(callback(null));
-					} else {
-						(callback(data.RouteList[0]));
+						return;
 					}
+
+					// 今日の曜日を調べる
+					var now = new Date();
+					var is_holiday = false;
+					if (now.getDay == 0 | now.getDay == 6) {
+						is_holiday = true;
+					}
+
+					// 当該路線IDに属するダイアグループのリストをリクエスト
+					var route = data.RouteList[0];
+					$http.get('http://oecu.pw/api/1/DiaGroup.json?RouteListT_ID_=' + route_id)
+						.success(function(data, status, headers, config) {
+							// 今日のダイアグループを選択
+							var today_group = null;
+							for (var i = 0, l = data.DiaGroup.length; i < l; i++) {
+								var group = data.DiaGroup[i];
+								if ((group.DiaName == "平日" && !is_holiday) || group.DiaName == "休日") {
+									today_group = group;
+									break;
+								}
+							}
+							// 路線とダイアグループを結合して返す
+							if (today_group != null) {
+								$.extend(route, today_group);
+							}
+							(callback(route));
+						})
+						.error(function(data, status, headers, config) {
+							if (opt_err_callback != null) {
+								(opt_err_callback(data));
+							}
+						});
 				})
 				.error(function(data, status, headers, config) {
 					if (opt_err_callback != null) {
@@ -78,12 +109,16 @@ services.factory('Helpers', [function() {
 		},
 
 		// ミリ秒から時間文字列(00:00:00)を取得
-		miliSecToTimeStr: function(msec) {
+		miliSecToTimeStr: function(msec, is_show_hour) {
 			var sec = msec / 1000;
 			var s = Math.floor(sec % 60); sec /= 60;
 			var m = Math.floor(sec % 60); sec /= 60;
 			var h = Math.floor(sec % 60);
-			return this.zpadding(h, 2) + ":" + this.zpadding(m, 2) + ":" + this.zpadding(s, 2);
+			if (is_show_hour) {
+				return this.zpadding(m, 2) + ":" + this.zpadding(s, 2);
+			} else {
+				return this.zpadding(h, 2) + ":" + this.zpadding(m, 2) + ":" + this.zpadding(s, 2);
+			}
 		},
 
 		// 残り時間をミリ秒として取得

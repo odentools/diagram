@@ -15,15 +15,19 @@
 	</head>
 	<body ng-app="SignageApp" ng-controller="DiagramCtrl" ng-init="routeId = 2;">
 		<header>
-	    	<div>{{route.ArrivalLocation}}&nbsp;&nbsp;行</div>
+			<div>
+				{{route.ArrivalLocation}}&nbsp;&nbsp;行
+			</div>
 		</header>
-		<div>
-			{{next_dia.remain_date}}
-		</div>
 		<ul class="content">
-			<li ng-repeat="dia in diagrams" ng-class="{'next-dia' : dia.is_next}">
-				<p ng-show="dia.is_next" slab-text>@ {{dia.remain_date | date:'hh:mm:ss'}}</p>
-				<span ng-show="!dia.is_next">{{dia.departure_date | date:'hh:mm'}}</span>
+			<li ng-repeat="dia in diagrams" ng-class="{'next-dia' : dia.is_next}" ng-show="!dia.is_past">
+				<p ng-show="dia.is_next" auto-resize style="width: auto; display: block; position: relative;">
+					@&nbsp;{{dia.remain_date_str}} <span class="note">{{dia.Note | substring:0:1}}</span>
+				</p>
+				<p ng-show="!dia.is_next && !dia.is_past">
+					{{dia.departure_date | date:'HH:mm'}}
+					<span class="note">{{dia.Note | substring:0:1}}</span>
+				</p>
 			</li>
 		</ul>
 	</body>
