@@ -64,9 +64,5 @@ li {
 
 .content li p span.note {
 	color: #505050;
-	font-size: 40px !important;
-}
-.content li.next-dia p span.note {
-	color: #505050;
-	font-size: 80px !important;
+	font-size: 75%;
 }
