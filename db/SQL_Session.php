@@ -61,6 +61,8 @@ class	SQL_Session{
 	function	BSelect($table, $Select = '*', $where = null, $type = null, $BPrm = null) {
 
 		$where == null ? $where = "":$where = " where ".$where;
+		
+		$BPrm  == null ? $BPrm = array():$BPrm;
 
 		$stmt = $this->mysqli->prepare("select ".$Select." from ".$table.$where);
 

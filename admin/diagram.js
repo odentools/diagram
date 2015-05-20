@@ -1,4 +1,4 @@
-const SERVER_URL = "http://oecu.pw/"
+const SERVER_URL = "http://"+location.host+"/";
 const SERVER_APIURL = SERVER_URL+"api/1/";
 
 var selected;
