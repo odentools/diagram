@@ -34,6 +34,7 @@ app.directive('autoResize', function($timeout, $compile) {
 			$(window).resize(function(){
 				window.setTimeout(func_resize, 100);
 			});
+			window.setInterval(func_resize, 10000);
 			window.setTimeout(func_resize, 10);
 		}
 	};
