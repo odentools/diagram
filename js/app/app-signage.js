@@ -35,7 +35,7 @@ app.directive('autoResize', function($timeout, $compile) {
 				window.setTimeout(func_resize, 100);
 			});
 			window.setInterval(func_resize, 10000);
-			window.setTimeout(func_resize, 10);
+			window.setTimeout(func_resize, 1000);
 		}
 	};
 });
@@ -53,6 +53,9 @@ app.filter('zpadding', function() {
 // フィルタ定義: substring
 app.filter('substring', function() {
 	return function(str, start, end) {
+		if (str == null) {
+			return null;
+		}
 		return str.substring(start, end);
 	};
 })
@@ -63,6 +66,8 @@ app.filter('substring', function() {
 app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagrams, Helpers) {
 	// 当該路線のデータ
 	$scope.route = null;
+	// 次の便
+	$scope.next_dia = null;
 	// 時刻表データ (便の配列)
 	var diagrams = [];
 
@@ -128,7 +133,7 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 			// 次の便であるかどうか
 			if (!dia.is_past && next_dia == null) {
 				// 残り時間を計算
-				dia.remain_date_str = Helpers.miliSecToTimeStr(Helpers.getRemainMiliSecByDate(dia.departure_date), true);
+				dia.remain_date_str = Helpers.miliSecToTimeStr(Helpers.getRemainMiliSecByDate(dia.departure_date), false);
 				// 次の便として保持
 				next_dia = dia;
 				dia.is_next = true;
@@ -139,6 +144,8 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 
 			$scope.diagrams.push(dia);
 		}
+
+		$scope.next_dia = next_dia
 	};
 
 	/* ---- */
