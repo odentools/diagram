@@ -30,6 +30,11 @@ jQuery(document).ready(function()
 
 			if(mouseY >= 10 && mouseY <= 50 && (offset + mouseX)/expansion >= -5 && (offset + mouseX)/expansion <= 1445) {
 
+				// 所要時間が確定している場合
+				if(document.diagram.moveTime.value != 0) {
+					arrivalPoint = mouseX + parseInt(document.diagram.moveTime.value)*expansion;
+				}
+
 				departurePoint = mouseX;
 
 			}
@@ -51,7 +56,7 @@ jQuery(document).ready(function()
 				var departureMinute = Math.floor((((departurePoint+offset)/expansion+5)/60-departureHour)*60/10)*10;
 				var arrivalHour;
 				var arrivalMinute;
-				if(document.diagram.moveTime.value == 0){
+				if(1){//document.diagram.moveTime.value == 0
 					arrivalHour = Math.floor(((arrivalPoint+offset)/expansion+5)/60);
 					arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion+5)/60-arrivalHour)*60/10)*10;
 				} else {
@@ -64,7 +69,7 @@ jQuery(document).ready(function()
 				var departureMinute = Math.floor((((departurePoint+offset)/expansion+0.5)/60-departureHour)*60);
 				var arrivalHour;
 				var arrivalMinute;
-				if(document.diagram.moveTime.value == 0){
+				if(1){//document.diagram.moveTime.value == 0
 					arrivalHour = Math.floor(((arrivalPoint+offset)/expansion)/60);
 					arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion)/60-arrivalHour)*60);
 				} else {
