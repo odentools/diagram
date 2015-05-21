@@ -117,11 +117,10 @@ services.factory('Helpers', [function() {
 			if (is_show_hour) {
 				return this.zpadding(h, 2) + ":" + this.zpadding(m, 2) + ":" + this.zpadding(s, 2);
 			} else {
-				var digit_min = 2;
-				if (100 <= m) {
-					digit_min = 3;
+				if (0 < h) {
+					return (m + h*60) + ":" + this.zpadding(s, 2);
 				}
-				return this.zpadding(m, digit_min) + ":" + this.zpadding(s, 2);
+				return this.zpadding(m, 2) + ":" + this.zpadding(s, 2);
 			}
 		},
 
@@ -132,7 +131,7 @@ services.factory('Helpers', [function() {
 
 		// ゼロ埋め
 		zpadding: function(num, digit) {
-			return ("00" + num).substr(-2);
+			return ("00" + num).substr(-digit);
 		}
 	};
 	return service;
