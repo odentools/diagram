@@ -115,9 +115,13 @@ services.factory('Helpers', [function() {
 			var m = Math.floor(sec % 60); sec /= 60;
 			var h = Math.floor(sec % 60);
 			if (is_show_hour) {
-				return this.zpadding(m, 2) + ":" + this.zpadding(s, 2);
-			} else {
 				return this.zpadding(h, 2) + ":" + this.zpadding(m, 2) + ":" + this.zpadding(s, 2);
+			} else {
+				var digit_min = 2;
+				if (100 <= m) {
+					digit_min = 3;
+				}
+				return this.zpadding(m, digit_min) + ":" + this.zpadding(s, 2);
 			}
 		},
 

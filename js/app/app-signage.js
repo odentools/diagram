@@ -133,7 +133,7 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 			// 次の便であるかどうか
 			if (!dia.is_past && next_dia == null) {
 				// 残り時間を計算
-				dia.remain_date_str = Helpers.miliSecToTimeStr(Helpers.getRemainMiliSecByDate(dia.departure_date), true);
+				dia.remain_date_str = Helpers.miliSecToTimeStr(Helpers.getRemainMiliSecByDate(dia.departure_date), false);
 				// 次の便として保持
 				next_dia = dia;
 				dia.is_next = true;
