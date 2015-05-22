@@ -1,0 +1,21 @@
+<?php
+
+$days = $_POST['start'];
+$days = explode(" ", $days);
+$days = strtotime( $days[1] . ' ' . $days[2] . ' ' . $days[3] );
+$start = date('Y-m-d H:i:s', $days);
+
+$days = $_POST['end'];
+$days = explode(" ", $days);
+$days = strtotime( $days[1] . ' ' . $days[2] . ' ' . $days[3] . '-1 day' );
+$end = date('Y-m-d H:i:s', $days);
+
+// イベントデータを出力
+echo json_encode(array(
+    array(
+        'title' => "ここにタイトル",
+        'start' => "2015-05-23"
+    )
+));
+
+?>

@@ -38,20 +38,9 @@ function initialize_the_calendar() {
 			today: '今日'
 		},
 		eventClick: function(calEvent, jsEvent, view) {
-			//calEvent.title = 'hoge';
-			//$('#calendar').fullCalendar('updateEvent', calEvent);
-			console.log(calEvent._id);
 			$('#calendar').fullCalendar("removeEvents", calEvent._id); //イベント（予定）の削除
 		},
-		       // カレンダーのどこかをクリックしたらイベントを作る
-        dayClick: function(date, allDay, jsEvent, view) {
-            $('#calendar').fullCalendar('addEventSource', [{
-                title: 'no title',
-                start: date,
-                allDay: allDay
-            }]);
-        },
-		// firstDay : 1, 月曜開始
+		// firstDay : 1, // 月曜開始
 		editable: true,
 		droppable: true, // this allows things to be dropped onto the calendar
 		drop: function() {
@@ -129,7 +118,7 @@ function getRouteList() {
  */
 function routeNameChange(obj) {
 
-	$('#calendar').fullCalendar('destroy');
+	$('#calendar').fullCalendar('removeEvents');
 	
 	var element = document.getElementById("Dias");
 	if(element.childNodes.length > 0) {
@@ -137,6 +126,21 @@ function routeNameChange(obj) {
 	}
 	
 	initialize_the_calendar();
+	
+	var view = $('#calendar').fullCalendar('getView');
+	$.ajax({
+		url: "event.json",
+		dataType: 'json',
+		type:"post",
+		data: {
+			"start": view.start._d.toString(),
+			"end": view.end._d.toString(),
+		},
+		success: function(EventSource) {
+			$('#calendar').fullCalendar('addEventSource', EventSource);
+		}
+	});
+		
 
 	// 路線リストの(詳細)取得
 	$.ajax({
@@ -326,7 +330,6 @@ function routeNameChange(obj) {
 	</tr>
 
 	</table>
-
 	
 </body>
 </html>
