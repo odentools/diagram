@@ -123,12 +123,14 @@ calendarList = array;
 
 function register() {
 
-	var postData = new Array();
+	postData = new Array();
 
 	calendarList.forEach(function(val, index) {
-		postData.push({title:title, day:start});
+		postData.push({title:val.title, day:val.start});
 	});
-
+	
+	postData= {postData:postData};
+	
 	$.ajax({
 
 		type: "POST",
