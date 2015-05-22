@@ -126,7 +126,7 @@ function routeNameChange(obj) {
 	}
 	
 	initialize_the_calendar();
-	
+
 	var view = $('#calendar').fullCalendar('getView');
 	$.ajax({
 		url: "event.json",
@@ -135,6 +135,7 @@ function routeNameChange(obj) {
 		data: {
 			"start": view.start._d.toString(),
 			"end": view.end._d.toString(),
+			"id": obj.options[obj.selectedIndex].value
 		},
 		success: function(EventSource) {
 			$('#calendar').fullCalendar('addEventSource', EventSource);
@@ -171,7 +172,7 @@ function routeNameChange(obj) {
 					data.DiaGroup.forEach(function(a) {
 						var element = document.createElement("div");
 						element.className = 'fc-event';
-						element.innerHTML = a.DiaName;
+						element.innerHTML = a.id + ': ' + a.DiaName;
 						document.getElementById("Dias").appendChild(element);
 					});
 					
