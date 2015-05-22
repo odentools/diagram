@@ -121,6 +121,37 @@ calendarList = array;
 
 }
 
+function register() {
+
+	var postData = new Array();
+
+	calendarList.forEach(function(val, index) {
+		postData.push({title:title, day:start});
+	});
+
+	$.ajax({
+
+		type: "POST",
+		url: SERVER_URL+"db/T.php?schedule",
+		async: false, // ブラウザロック有効
+		data: postData,
+		dataType: "text",
+	
+		success: function(data, dataType) {
+	
+			//console.log(JSON.parse(data));
+	
+		},
+		error: function(res, textStatus, xhr) {
+	
+			alert("サーバーとの通信に失敗しました。");
+	
+		}
+
+	});
+
+}
+
 
 /* 路線リストの(一覧)取得
  */
@@ -352,6 +383,7 @@ function routeNameChange(obj) {
 			運営：<input type="text" name="management" readonly>
 			出発地点：<input type="text" name="departureLocation" readonly>
 			到着地点：<input type="text" name="arrivalLocation" readonly>
+			　<input type="button" onClick="register()" value="登録">
 		</div>
 
 		<p></p>
