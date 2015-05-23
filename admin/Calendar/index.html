@@ -155,7 +155,10 @@ function register() {
 	postData = new Array();
 
 	calendarList.forEach(function(val, index) {
-		postData.push({title:val.title, day:val.start});
+		
+		var DiaGroupT_ID = val.title.split(":")[0];
+		postData.push({RouteListT_ID_:routeId, DiaGroupT_ID_:DiaGroupT_ID, TravelDate:val.start});
+
 	});
 	
 	postData= {postData:postData, routeId:routeId};

@@ -120,6 +120,32 @@ class	SQL_Session{
 
 	/**
 	 * @fn
+	 * スケジュールテーブルのレコードを削除する
+	 * @breaf スケジュールテーブルのレコード削除する
+	 * @param ($id) スケジュールテーブルのレコードID(路線ID)
+	 * @warning レコードの削除については必ず新規のメゾットで作成する事.
+	 * @return なし
+	 */
+	function	BScheduleTDelete($id) {
+		
+		$table="ScheduleT";
+		$type = "i";
+		$where = "RouteListT_ID_=?";
+
+		$query = "delete from ".$table." where ".$where;
+
+		$stmt = $this->mysqli->prepare($query);
+		
+		$stmt->bind_param($type, $id);
+
+		$stmt->execute();
+
+		$stmt->close();
+
+	}
+
+	/**
+	 * @fn
 	 * レコードの取得を行う
 	 * @sa http://www.akiyan.com/blog/archives/2011/07/php-mysqli-fetchall.html
 	 * @breaf レコードの取得を行う
