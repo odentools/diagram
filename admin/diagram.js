@@ -585,7 +585,11 @@ function register() {
 /* ----------------------------------------
  * 重複を排除しながらpushする関数
  * ---------------------------------------- */
+<<<<<<< HEAD
+function PushArray(array, value) {
+=======
  function PushArray(array, value) {
+>>>>>>> master
 
 	// 存在しない場合、配列にpushする
 	if(! IsExists(array, value)) {
