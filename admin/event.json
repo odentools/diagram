@@ -1,0 +1,44 @@
+<?php
+
+	include_once (dirname(__FILE__) . "/../../db/SQL_Session.php");
+	include_once (dirname(__FILE__) . "/../../lib/lib.php");
+
+	$mysqli = new SQL_Session();
+	
+	$P_Parm = array ('start' => NULL, 'end' => NULL, 'id' => NULL);
+	if ( CheckPostParameter($P_Parm) ) {
+		$P_Parm = GetPostParameter($P_Parm);
+
+		// 日付を変換
+		/*
+		// 将来的に全件検索が重くなった時に利用可能です。
+		$days = $P_Parm['start'];
+		$days = explode(" ", $days);
+		$days = strtotime( $days[1] . ' ' . $days[2] . ' ' . $days[3] );
+		$start = date('Y-m-d H:i:s', $days);
+
+		$days = $P_Parm['end'];
+		$days = explode(" ", $days);
+		$days = strtotime( $days[1] . ' ' . $days[2] . ' ' . $days[3] . '-1 day' );
+		$end = date('Y-m-d H:i:s', $days);
+		*/
+
+		$Select = "ScheduleT.RouteListT_ID_ ,DiaGroupT_ID_, TravelDate, DiaName";
+	
+		$BPrm = array(0=>$P_Parm["id"]);
+
+		$result = $mysqli->BSelect("ScheduleT INNER JOIN DiaGroupT ON ScheduleT.DiaGroupT_ID_ = DiaGroupT.id", $Select, "ScheduleT.RouteListT_ID_=?", "s", $BPrm);
+
+		$json = array();
+
+		foreach($result as $key => $val) {
+			$json[$key]['start'] = $val['TravelDate'];
+			$json[$key]['title'] = $val['DiaGroupT_ID_'].': '.$val['DiaName'];
+		}
+
+		// イベントデータを出力
+		echo json_encode($json);
+
+	}
+
+?>

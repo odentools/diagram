@@ -1,22 +1,459 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta http-equiv="Content-Language" content="ja" />
-        <meta http-equiv="Content-Style-Type" content="text/css" />
-        <meta http-equiv="Content-Script-Type" content="text/javascript" />
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js"></script>
-        <title>Canvas</title>
-        <!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
-    </head>
-    <body>
-        <h1>Canvas</h1>
-        <form name="calendar">
-                <canvas id="canvassample" width="1040" height="400"></canvas>
-                <input type="button" onClick="test()" value="test">
-        </form>
-        <script src="calendar.js"></script>
-    </body>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<link href='./fullcalendar.css' rel='stylesheet' />
+<link href='./fullcalendar.print.css' rel='stylesheet' media='print' />
+<script src='./lib/moment.min.js'></script>
+<script src='./lib/jquery.min.js'></script>
+<script src='./lib/jquery-ui.custom.min.js'></script>
+<script src='./fullcalendar.min.js'></script>
+<script>
+
+// カレンダーのリスト
+calendarList = new Array();
+routeId = null;
+
+const SERVER_URL = "http://"+location.host+"/";
+const SERVER_APIURL = SERVER_URL+"api/1.1/";
+
+$(document).ready(function() {
+		
+	getRouteList();
+
+});
+
+
+// 参考 http://kazunori-lab.com/uchikikase/?p=769
+function initialize_the_calendar() {
+
+	$('#calendar').fullCalendar({
+		header: {
+			left: 'prev,next today',
+			center: 'title',
+			right: ''
+		},
+		dayNames: ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'],
+		dayNamesShort: ['日','月','火','水','木','金','土'],
+		titleFormat: {
+			month: 'YYYY年 M月'
+		},
+		buttonText: {
+			today: '今日'
+		},
+		eventReceive: function(event, element) {
+			// 新規追加
+			var start = new Date( event.start._d.valueOf() );
+			addCalendarList(event._id, event.title, [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' ), null);
+		},
+		eventClick: function(calEvent, jsEvent, view) {
+			// 削除
+			deleteCalendarList(calEvent._id);
+			$('#calendar').fullCalendar("removeEvents", calEvent._id); //イベント（予定）の削除
+		},
+		// firstDay : 1, // 月曜開始
+		editable: true,
+		droppable: true, // this allows things to be dropped onto the calendar
+		drop: function() {
+			// is the "remove after drop" checkbox checked?
+			if ($('#drop-remove').is(':checked')) {
+				// if so, remove the element from the "Draggable Events" list
+				$(this).remove();
+			}
+		},
+		eventDragStop: function(event) {
+		},
+		eventDrop: function( event, delta, revertFunc, jsEvent, ui, view ) {
+			// ドロップ
+			deleteCalendarList(event._id);
+
+			var start = new Date( event.start._d.valueOf() );
+			addCalendarList(event._id, event.title, [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' ), null);
+
+		},
+		eventResize: function(event, delta, revertFunc) {
+			// リサイズ その内実装するかもね。
+			//var start = new Date( event.start._d.valueOf() );
+			//var end = new Date( event.end._d.valueOf() );
+			//addCalendarList(event._id, event.title, [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' ), [end.getFullYear(), end.getMonth() + 1, end.getDate()].join( '-' ));
+			alert("1日毎にダイアを指定して下さい。");
+			revertFunc();
+		}
+	});
+
+}
+
+	
+function initialize_the_external_events() {
+
+	$('#external-events .fc-event').each(function() {
+	
+		// store data so the calendar knows to render an event upon drop
+		$(this).data('event', {
+			title: $.trim($(this).text()), // use the element's text as the event title
+			stick: true // maintain when user navigates (see docs on the renderEvent method)
+		});
+	
+		// make the event draggable using jQuery UI
+		$(this).draggable({
+			zIndex: 999,
+			revert: true,      // will cause the event to go back to its
+			revertDuration: 0  //  original position after the drag
+		});
+	
+	});	
+
+}
+
+function addCalendarList(id, title, start, end) {
+
+	if(IsExists(calendarList, start)) {
+
+		deleteCalendarList(id);
+		$('#calendar').fullCalendar("removeEvents", id);
+		alert("1日ダイアは1つで登録して下さい。");	
+		
+
+	} else {
+		calendarList.push({id:id, title:title, start:start, end:end});
+	}
+
+}
+
+function deleteCalendarList(id) {
+
+	var target = id;
+
+	var array = calendarList.filter(function(v, i) {
+		return (v.id !== target);
+	});
+
+calendarList = array;
+
+}
+
+
+// 参考　http://d.hatena.ne.jp/replication/20140227/1393465335
+// 配列内に存在するかを調べる関数
+function IsExists(array, value) {
+
+	for (var i =0, len = array.length; i < len; i++) {
+		if (value == array[i]['start']) {
+			// 存在したらtrueを返す
+			return true;
+		}
+	}
+	
+	// 存在しない場合falseを返す
+	return false;
+
+}
+
+
+function register() {
+
+	postData = new Array();
+
+	calendarList.forEach(function(val, index) {
+		
+		var DiaGroupT_ID = val.title.split(":")[0];
+		postData.push({RouteListT_ID_:routeId, DiaGroupT_ID_:DiaGroupT_ID, TravelDate:val.start});
+
+	});
+	
+	postData= {postData:postData, routeId:routeId};
+	
+	$.ajax({
+
+		type: "POST",
+		url: SERVER_URL+"db/T.php?schedule",
+		async: false, // ブラウザロック有効
+		data: postData,
+		dataType: "text",
+	
+		success: function(data, dataType) {
+	
+			//console.log(JSON.parse(data));
+			alert("登録しました。");
+	
+		},
+		error: function(res, textStatus, xhr) {
+	
+			alert("サーバーとの通信に失敗しました。");
+	
+		}
+
+	});
+
+}
+
+
+/* 路線リストの(一覧)取得
+ */
+function getRouteList() {
+
+	$.ajax({
+
+		type: "GET",
+		url: SERVER_APIURL+"RouteList.json?min",
+		async: false, // ブラウザロック有効
+		dataType: "json",
+
+		success: function(data, dataType) {
+
+				data.RouteList.forEach(function(val) {
+
+				var element = document.createElement("option");
+				element.value = val.id;
+				element.innerHTML = val.RouteName;
+				document.getElementById("routeName").appendChild(element);
+
+			});
+
+		},
+		error: function(res, textStatus, xhr) {
+
+			if(res.status!=404) alert("サーバーとの通信に失敗しました。\nCode: " + res.status);
+			return false;
+
+		}
+
+	});
+	
+	routeNameChange(document.getElementById("routeName"));
+
+}
+
+
+/* 路線名ドロップダウンの変更時
+ */
+function routeNameChange(obj) {
+
+	calendarList = new Array();
+	routeId = obj.options[obj.selectedIndex].value;
+	
+	$('#calendar').fullCalendar('removeEvents');
+
+	var element = document.getElementById("dias");
+	if(element.childNodes.length > 0) {
+		$("#dias").children().remove();
+	}
+	
+	initialize_the_calendar();
+
+	var view = $('#calendar').fullCalendar('getView');
+
+	$.ajax({
+		url: "event.json",
+		dataType: 'json',
+		type:"post",
+		data: {
+			"start": view.start._d.toString(),
+			"end": view.end._d.toString(),
+			"id": routeId
+		},
+		success: function(EventSource) {
+			$('#calendar').fullCalendar('addEventSource', EventSource);
+
+			// カレンダーのリストに初期登録
+			EventSource.forEach(function(val, index) {
+
+				addCalendarList('_fc'+(index+1), val.title, val.start, null);
+			});
+
+		}
+	});
+		
+
+	// 路線リストの(詳細)取得
+	$.ajax({
+
+		type: "GET",
+		url: SERVER_APIURL+"RouteList.json?id="+obj.options[obj.selectedIndex].value,
+		async: false, // ブラウザロック有効
+		dataType: "json",
+
+		success: function(data, dataType) {
+
+			data.RouteList.forEach(function(val) {
+				document.diagram.management.value = val.Management;
+				document.diagram.departureLocation.value = val.DepartureLocation;
+				document.diagram.arrivalLocation.value = val.ArrivalLocation;
+			});
+
+			// ダイアグループの(一覧)取得
+			$.ajax({
+
+				type: "GET",
+				url: SERVER_APIURL+"DiaGroup.json?RouteListT_ID_="+obj.options[obj.selectedIndex].value,
+				async: false, // ブラウザロック有効
+				dataType: "json",
+
+				success: function(data, dataType) {
+
+					data.DiaGroup.forEach(function(a) {
+						var element = document.createElement("div");
+						element.className = 'fc-event';
+						element.innerHTML = a.id + ': ' + a.DiaName;
+						document.getElementById("dias").appendChild(element);
+					});
+					
+					initialize_the_external_events();
+
+				},
+				error: function(res, textStatus, xhr) {
+
+					if(res.status==404) {
+
+						alert("ダイヤグループがありません\n登録して下さい");
+
+					} else {
+
+						alert("サーバーとの通信に失敗しました。\nCode: " + res.status);
+
+					}
+					
+					return false;
+
+				}
+
+			});
+
+		},
+		error: function(res, textStatus, xhr) {
+
+			if(res.status!=404) alert("サーバーとの通信に失敗しました。\nCode: " + res.status);
+				return false;
+			}
+
+	});
+
+}
+
+
+</script>
+<style>
+
+	body {
+		/* margin-top: 40px; */
+		text-align: center;
+		font-size: 14px;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+	}
+		
+	#wrap {
+		width: 1100px;
+		margin: 0 auto;
+	}
+		
+	#external-events {
+		float: left;
+		width: 150px;
+		padding: 0 10px;
+		border: 1px solid #ccc;
+		background: #eee;
+		text-align: left;
+	}
+		
+	#external-events h4 {
+		font-size: 16px;
+		margin-top: 0;
+		padding-top: 1em;
+	}
+		
+	#external-events .fc-event {
+		margin: 10px 0;
+		cursor: pointer;
+	}
+		
+	#external-events p {
+		margin: 1.5em 0;
+		font-size: 11px;
+		color: #666;
+	}
+		
+	#external-events p input {
+		margin: 0;
+		vertical-align: middle;
+	}
+
+	#calendar {
+		float: right;
+		width: 900px;
+	}
+	
+	/* 土曜日 */
+	.fc-sat {
+		color: blue;
+		background-color: #f0f0ff;
+	}
+
+	/* 日曜日 */
+	.fc-sun {
+		color: red;
+		background-color: #fff0f0;
+	}
+	
+	table {
+		margin-left: auto;
+		margin-right: auto;
+	}
+	
+	#header {
+		text-align: left;
+		vertical-align: middle;
+	}
+
+</style>
+</head>
+<body>
+
+	<table border="0">
+
+	<tr>
+	<td id = "header">
+	<form name="diagram">
+		<div>路線名：
+			<select name="routeNameList" id="routeName" onChange="routeNameChange(this);"></select>
+		</div>
+
+		<div>
+			運営：<input type="text" name="management" readonly>
+			出発地点：<input type="text" name="departureLocation" readonly>
+			到着地点：<input type="text" name="arrivalLocation" readonly>
+			　<input type="button" onClick="register()" value="登録">
+		</div>
+
+		<p></p>
+
+	</form>
+	</td>
+	</tr>
+
+	<tr>
+	<td>
+
+	<div id='wrap'>
+
+		<div id='external-events'>
+			<h4>ダイアグループ</h4>
+			<div id='dias'></div>
+			<p>
+				<input type='checkbox' id='drop-remove' />
+				<label for='drop-remove'>remove after drop</label>
+			</p>
+		</div>
+
+		<div id='calendar'></div>
+
+		<div style='clear:both'></div>
+
+	</div>
+	
+	</td>
+	</tr>
+
+	</table>
+	
+</body>
 </html>
