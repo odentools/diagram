@@ -43,7 +43,7 @@ function initialize_the_calendar() {
 		eventReceive: function(event, element) {
 			// 新規追加
 			var start = new Date( event.start._d.valueOf() );
-			addCalendarList(event._id, event.title, [start.getFullYear(), start.getMonth() + 1, start.getDate()].join( '-' ), null);
+			addCalendarList(event._id, event.title, [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' ), null);
 		},
 		eventClick: function(calEvent, jsEvent, view) {
 			// 削除
@@ -67,13 +67,14 @@ function initialize_the_calendar() {
 			deleteCalendarList(event._id);
 
 			var start = new Date( event.start._d.valueOf() );
-			addCalendarList(event._id, event.title, [start.getFullYear(), start.getMonth() + 1, start.getDate()].join( '-' ), null);			
+			addCalendarList(event._id, event.title, [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' ), null);
+
 		},
 		eventResize: function(event, delta, revertFunc) {
 			// リサイズ その内実装するかもね。
 			//var start = new Date( event.start._d.valueOf() );
 			//var end = new Date( event.end._d.valueOf() );
-			//addCalendarList(event._id, event.title, [start.getFullYear(), start.getMonth() + 1, start.getDate()].join( '-' ), [end.getFullYear(), end.getMonth() + 1, end.getDate()].join( '-' ));
+			//addCalendarList(event._id, event.title, [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' ), [end.getFullYear(), end.getMonth() + 1, end.getDate()].join( '-' ));
 			alert("1日毎にダイアを指定して下さい。");
 			revertFunc();
 		}
@@ -105,7 +106,16 @@ function initialize_the_external_events() {
 
 function addCalendarList(id, title, start, end) {
 
-	calendarList.push({id:id, title:title, start:start, end:end});
+	if(IsExists(calendarList, start)) {
+
+		deleteCalendarList(id);
+		$('#calendar').fullCalendar("removeEvents", id);
+		alert("1日ダイアは1つで登録して下さい。");	
+		
+
+	} else {
+		calendarList.push({id:id, title:title, start:start, end:end});
+	}
 
 }
 
@@ -120,6 +130,24 @@ function deleteCalendarList(id) {
 calendarList = array;
 
 }
+
+
+// 参考　http://d.hatena.ne.jp/replication/20140227/1393465335
+// 配列内に存在するかを調べる関数
+function IsExists(array, value) {
+
+	for (var i =0, len = array.length; i < len; i++) {
+		if (value == array[i]['start']) {
+			// 存在したらtrueを返す
+			return true;
+		}
+	}
+	
+	// 存在しない場合falseを返す
+	return false;
+
+}
+
 
 function register() {
 
