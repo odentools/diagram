@@ -1,4 +1,4 @@
-const SERVER_URL = "http://oecu.pw/"
+const SERVER_URL = "http://"+location.host+"/";
 const SERVER_APIURL = SERVER_URL+"api/1/";
 
 var selected;
@@ -96,6 +96,9 @@ jQuery(document).ready(function()
 				arrivalTime:arrivalHour+":"+arrivalMinute, 
 				note:""
 			});
+			
+			// ここに色を変える場合コードを挿入して下さい
+			jQuery("#jqg"+$("#list").getGridParam("records"), "#list").effect("highlight", {}, 2000);
 
 		}
 
@@ -573,7 +576,11 @@ function register() {
 /* ----------------------------------------
  * 重複を排除しながらpushする関数
  * ---------------------------------------- */
+<<<<<<< HEAD
 function PushArray(array, value) {
+=======
+ function PushArray(array, value) {
+>>>>>>> master
 
 	// 存在しない場合、配列にpushする
 	if(! IsExists(array, value)) {

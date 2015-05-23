@@ -8,27 +8,34 @@
 
 var app = angular.module('SignageApp', ['Diagram.services']);
 
-// ディレクティブ定義: SlabText (jQueryプラグイン)
-app.directive('slabText', function($timeout, $compile) {
+// ディレクティブ定義: autoResize
+app.directive('autoResize', function($timeout, $compile) {
 	return {
 		link: function(scope, element, attrs){
-			// 黒魔法 (随時書き換えられる要素に対して適用させたい＆特殊なjQueryプラグインであるため)
-			var $elem = $('<div>').html(element.html());
-			if (element.data('tmpl') == null) {
-				element.data('tmpl', $elem.html());
-			}
-			var up = function() {
-				// HTMLテンプレートをコンパイルして注入
-				var $c = $compile($elem)(scope);
-				$(element).html($c.html());
-				// SLABTEXTを適用
-				$(element).slabText({
-					minCharsPerLine: 10
-				});
-				// タイマーを開始
-				$timeout(up, 500);
+			var $elem = $(element);
+			var func_resize = function() {
+				if (!$elem.is(':visible')) { // 非表示のオブジェクトは除外
+					return;
+				}
+				// 現在の幅を取得
+				var before_width = $elem.offset().left + $elem.outerWidth();
+				// リサイズ
+				for (var size = 10; size < 1000; size += 10) {
+					$elem.css('fontSize', size+'px');
+					var w = $elem.offset().left + $elem.outerWidth();
+					if (before_width == w || $(window).width() <= w) {
+						size -= 20;
+						$elem.css('fontSize', size+'px');
+						break;
+					}
+					before_width = w;
+				}
 			};
-			up();
+			$(window).resize(function(){
+				window.setTimeout(func_resize, 100);
+			});
+			window.setInterval(func_resize, 10000);
+			window.setTimeout(func_resize, 10);
 		}
 	};
 });
@@ -43,6 +50,13 @@ app.filter('zpadding', function() {
 	};
 });
 
+// フィルタ定義: substring
+app.filter('substring', function() {
+	return function(str, start, end) {
+		return str.substring(start, end);
+	};
+})
+
 /**
 	時刻表ページ用コントローラ
 **/
@@ -50,7 +64,7 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 	// 当該路線のデータ
 	$scope.route = null;
 	// 時刻表データ (便の配列)
-	$scope.diagrams = [];
+	var diagrams = [];
 
 	// 路線情報および時刻表の取得
 	$scope.fetchDiagrams = function(route_id) {
@@ -69,8 +83,8 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 				}
 
 				// 時刻表を取得
-				Diagrams.fetch(2, function(diagrams) {
-					$scope.diagrams = diagrams;
+				Diagrams.fetch(3, function(diagrams_) {
+					diagrams = diagrams_;
 				});
 			},
 			function(data) { // エラー時
@@ -85,32 +99,45 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 
 	// 次の便＆残りの便の更新
 	$scope.updateDiagrams = function() {
-		if ($scope.diagrams == null) {
+		if (diagrams == null) {
 			return
 		}
 
 		var now = new Date();
 		var next_dia = null;
 
-		for (var i = 0, l = $scope.diagrams.length; i < l; i++) {
-			var dia = $scope.diagrams[i];
+		$scope.diagrams = [];
+
+		for (var i = 0, l = diagrams.length; i < l; i++) {
+			var dia = diagrams[i];
 
 			// 発車時刻をDate型へ変換
 			dia.departure_date = Helpers.timeStrToDate(dia.DepartureTime);
-			if (dia.departure_date < now) {
+
+			// 過ぎた便であるかどうか
+			if (now.getDate() != dia.departure_date.getDate()) { // 明日の便
+				dia.is_past = true;
+			} else if (dia.departure_date < now) { // 今日の過ぎた便
+				dia.is_past = true;
+				// 明日の便にする
 				dia.departure_date.setDate(dia.departure_date.getDate() + 1);
+			} else { // 過ぎていない便
+				dia.is_past = false;
 			}
 
 			// 次の便であるかどうか
-			if (next_dia == null) {
+			if (!dia.is_past && next_dia == null) {
 				// 残り時間を計算
-				dia.remain_date = Helpers.miliSecToTimeStr(Helpers.getRemainMiliSecByDate(dia.departure_date));
+				dia.remain_date_str = Helpers.miliSecToTimeStr(Helpers.getRemainMiliSecByDate(dia.departure_date), true);
 				// 次の便として保持
 				next_dia = dia;
 				dia.is_next = true;
 			} else {
+				dia.remain_date_str = null;
 				dia.is_next = false;
 			}
+
+			$scope.diagrams.push(dia);
 		}
 	};
 

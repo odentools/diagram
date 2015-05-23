@@ -22,15 +22,18 @@
 			datatype: "local",
 			colNames:['出発時刻', '到着時刻', '備考'],
 			colModel:[
-				{index:'departureTime', name:'departureTime', width:100, editable:true, align:'center', sortable:false, resizable:false, frozen:true },
+				{index:'departureTime', name:'departureTime', width:100, editable:true, align:'center', sortable:true, resizable:false, frozen:true },
 				{index:'arrivalTime', name:'arrivalTime', width:100, editable:true, align:'center', sortable:false, resizable:false, frozen:true },
 				{index:'note', name:'note', width:250, editoptions:{maxlength:50}, editable:true, align:'center', sortable:false, resizable:false, frozen:true }
 			],
 			width: 450,
+			rowNum : 1000000,
 			height: 'auto',
 			cellEdit: true,
 			cellsubmit: 'clientArray',
 			multiselect: true,
+			sortname: 'departureTime',
+			sortorder: "ASC",
 			afterEditCell: function (rowid, cellname, value, iRow, iCol)
 			{
 				if(cellname != "note") {

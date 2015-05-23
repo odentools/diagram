@@ -40,6 +40,9 @@ li {
 	padding: 0;
 	margin: 0;
 }
+
+/* 便のブロック */
+
 .content li {
 	padding: 15px 15px;
 	border: 1px solid #ccc;
@@ -52,6 +55,14 @@ li {
 	float: left;
 	list-style: none;
 }
-.content li.next-dia {
-	width: 90%;
+
+.content li p {
+	margin: 0 0 0 0;
+}
+
+/* 備考 */
+
+.content li p span.note {
+	color: #505050;
+	font-size: 75%;
 }
