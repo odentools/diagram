@@ -12,6 +12,7 @@
 
 // カレンダーのリスト
 calendarList = new Array();
+routeId = null;
 
 const SERVER_URL = "http://"+location.host+"/";
 const SERVER_APIURL = SERVER_URL+"api/1.1/";
@@ -157,7 +158,7 @@ function register() {
 		postData.push({title:val.title, day:val.start});
 	});
 	
-	postData= {postData:postData};
+	postData= {postData:postData, routeId:routeId};
 	
 	$.ajax({
 
@@ -225,6 +226,8 @@ function getRouteList() {
 function routeNameChange(obj) {
 
 	calendarList = new Array();
+	routeId = obj.options[obj.selectedIndex].value;
+	
 	$('#calendar').fullCalendar('removeEvents');
 
 	var element = document.getElementById("dias");
@@ -243,7 +246,7 @@ function routeNameChange(obj) {
 		data: {
 			"start": view.start._d.toString(),
 			"end": view.end._d.toString(),
-			"id": obj.options[obj.selectedIndex].value
+			"id": routeId
 		},
 		success: function(EventSource) {
 			$('#calendar').fullCalendar('addEventSource', EventSource);
