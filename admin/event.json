@@ -1,7 +1,7 @@
 <?php
 
-	include_once (dirname(__FILE__) . "/../../db/SQL_Session.php");
-	include_once (dirname(__FILE__) . "/../../lib/lib.php");
+	include_once (dirname(__FILE__) . "/../db/SQL_Session.php");
+	include_once (dirname(__FILE__) . "/../lib/lib.php");
 
 	$mysqli = new SQL_Session();
 	
