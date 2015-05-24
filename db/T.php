@@ -3,8 +3,11 @@
 include_once(dirname(__FILE__) ."/../lib/lib.php");
 include_once(dirname(__FILE__) ."/SQL_Session.php");
 
-$P_Parm = array("RouteListT" => "ssss", "DiaGroupT" => "is");
 $mysqli = new SQL_Session();
+
+if(!isset($_GET['schedule'])) {
+
+$P_Parm = array("RouteListT" => "ssss", "DiaGroupT" => "is");
 
 if(CheckPostParameter($P_Parm)) {
 	
@@ -69,6 +72,35 @@ if(CheckPostParameter($P_Parm)) {
 	}
 		
 	echo json_encode($result);
+
+}
+
+// スケージュール登録
+} else {
+
+	$P_Parm = array("postData" => "iis", "routeId" => null );
+
+	$P_Data = GetPostParameter($P_Parm);
+
+	$routeId = (int)$P_Data["routeId"];
+
+	// スケージュールテーブルから削除
+	$mysqli->BScheduleTDelete($routeId);
+
+	// BD Bindの為キャスト処理
+	foreach ( (array)$P_Data["postData"] as $key => $val ) {
+		foreach ( (array)$val as $key2 => $val2 ) {
+			if ( preg_match('/_ID_$/', $key2) )  {
+				$P_Data["postData"][$key][$key2] = (int)$val2;
+			}
+		}
+	}
+
+	foreach((array)$P_Data["postData"] as $key => $val) {
+
+		$mysqli->NewRecordAutoID("ScheduleT", $P_Parm["postData"], $val);
+
+	}
 
 }
 
