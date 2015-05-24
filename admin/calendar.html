@@ -10,6 +10,12 @@
 <script src='./fullcalendar.min.js'></script>
 <script>
 
+
+//	var array = calendarList.filter(function(v, i) {
+//		return (v.id !== target);
+//	});
+
+
 const SERVER_URL = "http://"+location.host+"/";
 const SERVER_APIURL = SERVER_URL+"api/1.1/";
 
@@ -82,27 +88,6 @@ function initialize_the_external_events() {
 	});	
 
 }
-
-//	var array = calendarList.filter(function(v, i) {
-//		return (v.id !== target);
-//	});
-
-// 参考　http://d.hatena.ne.jp/replication/20140227/1393465335
-// 配列内に存在するかを調べる関数
-function IsExists(array, value) {
-
-	for (var i =0, len = array.length; i < len; i++) {
-		if (value == array[i]['start']) {
-			// 存在したらtrueを返す
-			return true;
-		}
-	}
-	
-	// 存在しない場合falseを返す
-	return false;
-
-}
-
 
 function register() {
 
