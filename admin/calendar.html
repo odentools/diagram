@@ -10,10 +10,6 @@
 <script src='./fullcalendar.min.js'></script>
 <script>
 
-// カレンダーのリスト
-calendarList = new Array();
-routeId = null;
-
 const SERVER_URL = "http://"+location.host+"/";
 const SERVER_APIURL = SERVER_URL+"api/1.1/";
 
@@ -22,7 +18,6 @@ $(document).ready(function() {
 	getRouteList();
 
 });
-
 
 // 参考 http://kazunori-lab.com/uchikikase/?p=769
 function initialize_the_calendar() {
@@ -41,14 +36,8 @@ function initialize_the_calendar() {
 		buttonText: {
 			today: '今日'
 		},
-		eventReceive: function(event, element) {
-			// 新規追加
-			var start = new Date( event.start._d.valueOf() );
-			addCalendarList(event._id, event.title, [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' ), null);
-		},
-		eventClick: function(calEvent, jsEvent, view) {
-			// 削除
-			deleteCalendarList(calEvent._id);			
+		eventReceive: function(event, element) {},
+		eventClick: function(calEvent, jsEvent, view) {		
 			$('#calendar').fullCalendar("removeEvents", calEvent._id); //イベント（予定）の削除
 		},
 		// firstDay : 1, // 月曜開始
@@ -61,21 +50,10 @@ function initialize_the_calendar() {
 				$(this).remove();
 			}
 		},
-		eventDragStop: function(event) {
-		},
-		eventDrop: function( event, delta, revertFunc, jsEvent, ui, view ) {
-			// ドロップ
-			deleteCalendarList(event._id);
-
-			var start = new Date( event.start._d.valueOf() );
-			addCalendarList(event._id, event.title, [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' ), null);
-
-		},
+		eventDragStop: function(event) {},
+		eventDrop: function( event, delta, revertFunc, jsEvent, ui, view ) {},
 		eventResize: function(event, delta, revertFunc) {
-			// リサイズ その内実装するかもね。
-			//var start = new Date( event.start._d.valueOf() );
-			//var end = new Date( event.end._d.valueOf() );
-			//addCalendarList(event._id, event.title, [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' ), [end.getFullYear(), end.getMonth() + 1, end.getDate()].join( '-' ));
+			// リサイズ
 			alert("1日毎にダイアを指定して下さい。");
 			revertFunc();
 		}
@@ -105,33 +83,9 @@ function initialize_the_external_events() {
 
 }
 
-function addCalendarList(id, title, start, end) {
-
-	if(IsExists(calendarList, start)) {
-
-		deleteCalendarList(id);
-		$('#calendar').fullCalendar("removeEvents", id);
-		alert("1日ダイアは1つで登録して下さい。");	
-		
-
-	} else {
-		calendarList.push({id:id, title:title, start:start, end:end});
-	}
-
-}
-
-function deleteCalendarList(id) {
-
-	var target = id;
-
-	var array = calendarList.filter(function(v, i) {
-		return (v.id !== target);
-	});
-
-calendarList = array;
-
-}
-
+//	var array = calendarList.filter(function(v, i) {
+//		return (v.id !== target);
+//	});
 
 // 参考　http://d.hatena.ne.jp/replication/20140227/1393465335
 // 配列内に存在するかを調べる関数
@@ -154,15 +108,30 @@ function register() {
 
 	postData = new Array();
 
-	calendarList.forEach(function(val, index) {
-		
-		var DiaGroupT_ID = val.title.split(":")[0];
-		postData.push({RouteListT_ID_:routeId, DiaGroupT_ID_:DiaGroupT_ID, TravelDate:val.start});
+	var events = $('#calendar').fullCalendar('clientEvents');
 
-	});
-	
-	postData= {postData:postData, routeId:routeId};
-	
+	var element = document.getElementById("routeName")
+	var RouteListT_ID = element.options[element.selectedIndex].value;
+
+	if ( $.isArray(events) ) {
+
+		events.forEach ( function(val, index) {
+
+			var DiaGroupT_ID = val.title.split(":")[0];
+
+			var start = new Date ( val.start._d.valueOf () );
+			var startDay = [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' );
+
+			// 全てのダイアグループが一日であると過程した処理
+			// ToDo: 期間の存在するeventでなければendは、nullとなるのでこれを元に処理をする。
+			postData.push({RouteListT_ID_:RouteListT_ID, DiaGroupT_ID_:DiaGroupT_ID, TravelDate:startDay});
+
+		});
+		
+	}
+
+	postData= {postData:postData, routeId:RouteListT_ID};
+
 	$.ajax({
 
 		type: "POST",
@@ -184,7 +153,6 @@ function register() {
 		}
 
 	});
-
 }
 
 
@@ -230,8 +198,7 @@ function getRouteList() {
 function routeNameChange(obj) {
 
 	calendarList = new Array();
-	routeId = obj.options[obj.selectedIndex].value;
-	
+
 	$('#calendar').fullCalendar('removeEvents');
 	
 	var element = document.getElementById("dias");
@@ -250,18 +217,11 @@ function routeNameChange(obj) {
 		data: {
 			"start": view.start._d.toString(),
 			"end": view.end._d.toString(),
-			"id": routeId
+			"id": obj.options[obj.selectedIndex].value
 		},
 		success: function(EventSource) {
 
 			$('#calendar').fullCalendar('addEventSource', EventSource);
-//			console.log($('#calendar').fullCalendar('clientEvents'));
-
-			// カレンダーのリストに初期登録
-			EventSource.forEach(function(val, index) {
-
-				addCalendarList('_fc'+(index+1), val.title, val.start, null);
-			});
 
 		}
 	});
