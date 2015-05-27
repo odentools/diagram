@@ -1,6 +1,31 @@
 <?php
 /**
  * ----------------------------------------------------------
+ * getBindParameter()
+ * GETをBind値として取得する
+ * ----------------------------------------------------------
+ */
+function	getBindParameter($G_Parm) {
+
+	$Result = NULL;
+
+	// Bindする順番をValで指定する
+	foreach (GetGetParameter($G_Parm) as $key => $val) {
+
+		$Result[$G_Parm[$key]] = $val;
+			
+	}
+		
+	// 配列をKeyで昇順にソート
+	ksort($Result);
+	
+	return	$Result;
+
+}
+
+
+/**
+ * ----------------------------------------------------------
  * CheckGetParameter()
  * GET状態を確認する
  * ----------------------------------------------------------

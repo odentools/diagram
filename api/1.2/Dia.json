@@ -1,0 +1,48 @@
+<?php
+/****************************************************
+ * ダイアテーブルWeb API
+ * DiaTを扱います
+ * レスポンス JSON
+ ****************************************************/
+
+//select * from ScheduleT INNER JOIN DiaT ON ScheduleT.DiaGroupT_ID_ = DiaT.DiaGroupT_ID_ where ScheduleT.TravelDate = '2015/05/22' AND RouteListT_ID_ = 2
+
+	include_once (dirname(__FILE__) ."/../../db/SQL_Session.php"); 
+	include_once (dirname(__FILE__) ."/../../db/json.php");
+	include_once (dirname(__FILE__) ."/../../lib/lib.php");
+
+	$json	= new JSON();
+	$mysqli	= new SQL_Session();
+	
+	// 取得の確認を行うリスト, Bindの順番をValで指定
+	$G_Parm = array ('route_id' => 0, 'date' => 1);
+
+	if ( CheckGetParameter($G_Parm) ) {
+
+		$BPrm = getBindParameter($G_Parm);
+		
+		// IDをInt型にキャスト
+		$BPrm[$G_Parm['route_id']] = (int)$BPrm[$G_Parm['route_id']];
+
+		// 路線ID，日付からダイアグループIDを検索
+		$DiaGroupT_ID_ = $mysqli->BSelect("ScheduleT", "DiaGroupT_ID_", "RouteListT_ID_=? AND TravelDate=?", "is", $BPrm);
+
+		// 不要なデータをフィルタリング
+		$Select = "DepartureTime, ArrivalTime, Note";
+
+		// 開発要求の場合は全てを返す。
+		if(isset($_GET["develop"])) {
+
+			$Select = "*";
+
+		}
+
+		// ダイアグループIDからダイアを検索
+		foreach ($DiaGroupT_ID_ as $val) {
+			$Dia_ = $mysqli->BSelect("DiaT", $Select, "DiaGroupT_ID_=?", "s", array (0 => $val['DiaGroupT_ID_']));
+			$json->PushResult($Dia_,"Dia");	
+		}
+
+	}
+
+?>
