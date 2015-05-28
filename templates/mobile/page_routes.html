@@ -1,0 +1,9 @@
+<!-- Route list page (RoutesCtrl) -->
+<ul class="routes">
+	<a ng-repeat="item in routes" ng-href="#/routes/{{item.id}}">
+		<li class="card" style="border-left: 2px solid {{item.color}};">
+			{{item.RouteName}}
+		</li>
+	</a>
+</ul>
+<!---->

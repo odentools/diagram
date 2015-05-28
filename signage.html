@@ -12,22 +12,22 @@
 		<script src="js/app/services-diagram.js"></script>
 		<script src="js/app/app-signage.js"></script>
 	</head>
-	<body ng-app="SignageApp" ng-controller="DiagramCtrl" ng-init="routeId = 2;">
+	<body ng-app="SignageApp" ng-controller="TimetableCtrl" ng-init="routeId = 2;">
 		<header>
 			<div>
 				{{route.ArrivalLocation}}&nbsp;&nbsp;行
 			</div>
 		</header>
 		<ul class="content">
-			<li class="next-dia" ng-show="next_dia != null">
+			<li class="next-dia" ng-show="nextBus != null">
 				<p auto-resize style="width: auto; display: block; position: relative;">
-					@&nbsp;{{next_dia.remain_date_str}} <span class="note">{{next_dia.Note | substring:0:1}}</span>
+					@&nbsp;{{nextBus.RemainDateStr}} <span class="note">{{nextBus.Note | substring:0:1}}</span>
 				</p>
 			</li>
-			<li ng-repeat="dia in diagrams" ng-show="!dia.is_past">
-				<p ng-show="!dia.is_past">
-					{{dia.departure_date | date:'HH:mm'}}
-					<span class="note">{{dia.Note | substring:0:1}}</span>
+			<li ng-repeat="bus in buses" ng-show="!bus.IsPast">
+				<p ng-show="!bus.IsPast">
+					{{bus.DepartureDate | date:'HH:mm'}}
+					<span class="note">{{bus.Note | substring:0:1}}</span>
 				</p>
 			</li>
 		</ul>
