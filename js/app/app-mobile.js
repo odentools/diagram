@@ -51,10 +51,17 @@ app.filter('substring', function() {
 	路線一覧ページ用コントローラ
 **/
 app.controller('RoutesCtrl', function($scope, Routes, Helpers) {
+	// 路線の配列
 	$scope.routes = {};
+	// 読み込み中フラグ
+	$scope.isLoading = true;
 
+	/* ---- */
+
+	// 路線リストを取得
 	Routes.fetchAll(function(list){
 		$scope.routes = list;
+		$scope.isLoading = false;
 	});
 });
 
@@ -62,6 +69,8 @@ app.controller('RoutesCtrl', function($scope, Routes, Helpers) {
 	時刻表ページ用コントローラ
 **/
 app.controller('TimetableCtrl', function($scope, $routeParams, $timeout, Routes, Timetable, Helpers) {
+	// 読み込み中フラグ
+	$scope.isLoading = true;
 	// 全便の配列
 	var allBuses = [];
 	// 将来便の配列
@@ -95,13 +104,17 @@ app.controller('TimetableCtrl', function($scope, $routeParams, $timeout, Routes,
 						allBuses = buses;
 						// 将来便の配列を更新
 						$scope.updateBuses();
+						// 読み込み完了
+						$scope.isLoading = false;
 					},
 					function(data, status){
+						$scope.isLoading = false;
 						window.alert("[エラー] 時刻表を取得できません\n" + data.status.message);
 					}
 				);
 			},
 			function(data, status) { // エラー時
+				$scope.isLoading = false;
 				window.alert("[エラー] 路線情報を取得できません\n" + data.status.message);
 			}
 		);
