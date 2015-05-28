@@ -62,9 +62,9 @@ jQuery(document).ready(function()
 				} else {
 					arrivalHour = Math.floor(((arrivalPoint+offset)/expansion+5)/60);
 					arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion+5)/60-arrivalHour)*60/10)*10;
-					drrivalHour = departureHour;
-					drrivalMinute = departureMinute + parseInt(document.diagram.moveTime.value);
+
 				}
+
 			} else {
 			// 拡大表示の場合
 
@@ -87,8 +87,7 @@ jQuery(document).ready(function()
 					// 出発、到着時刻の計算
 					arrivalHour = Math.floor(((arrivalPoint+offset)/expansion+0.5)/60);
 					arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion+0.5)/60-arrivalHour)*60);
-					drrivalHour = departureHour;
-					drrivalMinute = departureMinute + parseInt(document.diagram.moveTime.value);
+
 				}
 			}
 			// 時刻のフォーマットを修正
