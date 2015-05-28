@@ -1,0 +1,45 @@
+<?php
+/****************************************************
+ * 路線リストテーブルWeb API
+ * RouteListTを扱います
+ * レスポンス JSON
+ ****************************************************/
+
+	include_once(dirname(__FILE__) ."/../../db/SQL_Session.php");
+	include_once(dirname(__FILE__) ."/../../db/json.php");
+	include_once(dirname(__FILE__) ."/../../lib/lib.php");
+
+	$json = new JSON();
+
+	$mysqli = new SQL_Session();
+
+	// 不要なデータをフィルタリング
+	$Select = "RouteName, Management, DepartureLocation, ArrivalLocation";
+
+	// 開発要求の場合は全てを返す。
+	if(isset($_GET["develop"])) {
+
+		$Select = "*";
+
+	}
+
+	$G_Parm = array('id' => NULL);
+	if(CheckGetParameter($G_Parm)) {
+
+		$BPrm = array(0=>$_GET["id"]);
+
+		$result = $mysqli->BSelect("RouteListT", $Select, "id=?", "s", $BPrm);
+
+		$json->PushResult($result, 'RouteList');
+
+	} else {
+
+		$query = "select ".$Select." from RouteListT";
+
+		$result = $mysqli->BSelect("RouteListT", $Select);
+
+		$json->PushResult($result, 'RouteList');
+
+	}
+
+?>
