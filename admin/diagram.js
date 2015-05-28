@@ -72,11 +72,11 @@ jQuery(document).ready(function()
 				var arrivalHour;
 				var arrivalMinute;
 				if(document.diagram.moveTime.value == 0){
-					arrivalHour = Math.floor(((arrivalPoint+offset)/expansion)/60);
-					arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion)/60-arrivalHour)*60);
+					arrivalHour = Math.floor(((arrivalPoint+offset)/expansion+0.5)/60);
+					arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion+0.5)/60-arrivalHour)*60);
 				} else {
-					arrivalHour = Math.floor(((arrivalPoint+offset)/expansion)/60);
-					arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion)/60-arrivalHour)*60);
+					arrivalHour = Math.floor(((arrivalPoint+offset)/expansion+0.5)/60);
+					arrivalMinute = Math.floor((((arrivalPoint+offset)/expansion+0.5)/60-arrivalHour)*60);
 					drrivalHour = departureHour;
 					drrivalMinute = departureMinute + parseInt(document.diagram.moveTime.value);
 				}
