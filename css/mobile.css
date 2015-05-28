@@ -29,21 +29,26 @@ p, ul, li {
 **/
 
 .card {
-	padding: 1.5rem;
-	box-shadow: 0 1px 2px #aaa;
 	background: white;
-	margin: 0 0.5rem 0.5rem;
 	border-radius: 3px;
+	box-shadow: 0 1px 2px #aaa;
+	margin: 0 0.5rem 0.5rem;
+	padding: 1.5rem;
 	user-select: none;
 }
 li.card {
 	animation: fly-in-from-left 0.5s 0.5s ease both;
+		-webkit-animation: fly-in-from-left 0.5s 0.5s ease both;
 	transform-origin: top left;
+		-webkit-transform-origin: top left;
 }
-li.card:nth-child(even){
-	animation-name:fly-in-from-right;
+li.card:nth-child(even) {
+	animation-name: fly-in-from-right;
+		-webkit-animation-name: fly-in-from-right;
 	animation-delay: 0.5s;
+		-webkit-animation-delay: 0.5s;
 	transform-origin:top right;
+		-webkit-transform-origin:top right;
 }
 
 .card hr {
@@ -109,7 +114,11 @@ ul.routes li {
 
 /* 時刻表情報 */
 div.timetable-info {
+	animation: fly-in-from-left 0.5s 0.5s ease both;
+		-webkit-animation: fly-in-from-left 0.5s 0.5s ease both;
 	margin-top: 5px;
+	transform-origin: top left;
+		-webkit-transform-origin: top left;
 }
 
 div.timetable-info .route-name {
@@ -169,19 +178,37 @@ ul.timetable li span.note {
 
 @keyframes fly-in-from-left {
 	from {
-		transform:translateY(15rem) rotate(15deg);
-		opacity:0;
+		transform: translateY(15rem) rotate(15deg);
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes fly-in-from-left {
+	from {
+		transform: translateY(15rem) rotate(15deg);
+		opacity: 0;
 	}
 }
 
 @keyframes fly-in-from-right {
 	from {
-		transform:translateY(15rem) rotate(-15deg);
-		opacity:0;
+		transform: translateY(15rem) rotate(-15deg);
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes fly-in-from-right {
+	from {
+		transform: translateY(15rem) rotate(-15deg);
+		opacity: 0;
 	}
 }
 
 @-webkit-keyframes blinker {
-	from {opacity: 1.0;}
-	to {opacity: 0.0;}
+	from {
+		opacity: 1.0;
+	}
+	to {
+		opacity: 0.0;
+	}
 }
