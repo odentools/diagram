@@ -5,7 +5,7 @@
  * レスポンス JSON
  ****************************************************/
 
-	include_once(dirname(__FILE__) ."/../../db/SQL_Session.php");
+	include_once(dirname(__FILE__) ."/SQL_Session.php");
 	include_once(dirname(__FILE__) ."/../../db/json.php");
 	include_once(dirname(__FILE__) ."/../../lib/lib.php");
 
