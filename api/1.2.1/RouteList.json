@@ -14,7 +14,7 @@
 	$mysqli = new SQL_Session();
 
 	// 不要なデータをフィルタリング
-	$Select = "RouteName, Management, DepartureLocation, ArrivalLocation";
+	$Select = "id, RouteName, Management, DepartureLocation, ArrivalLocation";
 
 	// 開発要求の場合は全てを返す。
 	if(isset($_GET["develop"])) {
