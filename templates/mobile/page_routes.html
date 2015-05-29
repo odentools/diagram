@@ -5,7 +5,7 @@
 <ul class="routes">
 	<a ng-repeat="item in routes" ng-href="#/routes/{{item.id}}">
 		<li class="card" style="border-left: 2px solid {{item.color}};">
-			{{item.RouteName}}
+			{{item.routePrefix}}&nbsp;{{item.routeName}}
 		</li>
 	</a>
 </ul>

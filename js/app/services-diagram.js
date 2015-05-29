@@ -9,7 +9,7 @@ services.factory('Constants', [function() {
 	var service = {
 		// WebAPIのベースURLを返す
 		getAPIEndpoint: function() {
-			return 'http://oecu.pw/api/1.2.1/';
+			return 'http://oecu.pw/api/1.3/';
 		}
 	};
 	return service;
@@ -63,9 +63,14 @@ services.factory('Routes', ['$http', 'Constants', function($http, Constants) {
 		// 路線リストの取得
 		fetchAll: function(callback, opt_err_callback) {
 			// リクエスト
-			$http.get(Constants.getAPIEndpoint() + 'RouteList.json')
+			$http.get(Constants.getAPIEndpoint() + 'Routes.json')
 				.success(function(data, status, headers, config) {
-					var list = data.RouteList;
+					var list = data.Route;
+					if (list == null) {
+						(callback(null));
+						return;
+					}
+
 					for (var i = 0, l = list.length; i < l; i++) {
 						// テーマカラーを設定
 						list[i].color = service.getRouteColor(list[i]);
@@ -84,15 +89,15 @@ services.factory('Routes', ['$http', 'Constants', function($http, Constants) {
 		// 路線の取得
 		fetch: function(route_id, callback, opt_err_callback) {
 			// 指定された路線IDの路線をリクエスト
-			$http.get(Constants.getAPIEndpoint() + 'RouteList.json?id=' + route_id)
+			$http.get(Constants.getAPIEndpoint() + 'Routes.json?id=' + route_id)
 				.success(function(data, status, headers, config) {
-					if (data.RouteList == null || data.RouteList.length <= 0) {
+					if (data.Route == null || data.Route.length <= 0) {
 						(callback(null));
 						return;
 					}
 
 					// 当該路線を取得
-					var route = data.RouteList[0];
+					var route = data.Route[0];
 
 					// テーマカラーを設定
 					route.color = service.getRouteColor(route);
@@ -109,9 +114,9 @@ services.factory('Routes', ['$http', 'Constants', function($http, Constants) {
 
 		// 路線のテーマカラーの取得
 		getRouteColor: function(route) {
-			if (route.Management == "大阪電気通信大学") {
+			if (route.management == "大阪電気通信大学") {
 				return "#599900";
-			} else if (route.Management == "近鉄バス") {
+			} else if (route.management == "近鉄バス") {
 				return "#ffff00";
 			}
 			return "#eeeeee";
@@ -127,20 +132,16 @@ services.factory('Timetable', ['$http', 'Helpers', 'Constants', function($http, 
 		fetch: function(dia_id, date, callback, opt_err_callback) {
 			// リクエスト
 			var date_str = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
-			$http.get(Constants.getAPIEndpoint() + 'Dia.json?route_id=' + dia_id + '&date=' + date_str)
+			$http.get(Constants.getAPIEndpoint() + 'Dias.json?route_id=' + dia_id + '&date=' + date_str)
 				.success(function(data, status, headers, config) {
 					var buses = [];
 					for (id in data.Dia) {
 						var item = data.Dia[id];
 						// IDをオブジェクトへ挿入
-						item.Id = parseInt(id);
+						item.id = parseInt(id);
 						// 発着時間をDateオブジェクトへ変換
-						item.ArrivaDate = Helpers.timeStrToDate(item.ArrivalTime);
-						item.DepartureDate = Helpers.timeStrToDate(item.DepartureTime);
-						// 備考の文字列を処理
-						if (item.Note.length == 0) {
-							item.Note = null;
-						}
+						item.arrivalDate = new Date(item.arrivalDate);
+						item.departureDate = new Date(item.departureDate);
 						// 配列へ挿入
 						buses.push(item);
 					}
@@ -164,36 +165,34 @@ services.factory('Timetable', ['$http', 'Helpers', 'Constants', function($http, 
 				var bus = buses[i];
 
 				// 過ぎた便であるかどうか
-				if (now.getDate() != bus.DepartureDate.getDate()) { // 明日の便
-					bus.IsPast = true;
-				} else if (bus.DepartureDate < now) { // 今日の過ぎた便
-					bus.IsPast = true;
-					// 明日の便にする
-					bus.DepartureDate.setDate(bus.DepartureDate.getDate() + 1);
+				if (now.getDate() != bus.departureDate.getDate()) { // 明日の便
+					bus.isPast = true;
+				} else if (bus.departureDate < now) { // 今日の過ぎた便
+					bus.isPast = true;
 				} else { // 過ぎていない便
-					bus.IsPast = false;
+					bus.isPast = false;
 				}
 
 				// 次の便であるかどうか
-				if (!bus.IsPast && next_bus == null) {
+				if (!bus.isPast && next_bus == null) {
 					// 残り時間を計算
-					var rem_msec = Helpers.getRemainMiliSecByDate(bus.DepartureDate);
-					bus.RemainDateStr = Helpers.miliSecToTimeStr(rem_msec, false);
+					var rem_msec = Helpers.getRemainMiliSecByDate(bus.departureDate);
+					bus.remainDateStr = Helpers.miliSecToTimeStr(rem_msec, false);
 					// 次の便として保持
 					next_bus = bus;
-					bus.IsNext = true;
+					bus.isNext = true;
 					// まもなく出発するかどうか
-					bus.IsSoon = false;
+					bus.isSoon = false;
 					if (rem_msec <= 60000) { // 60秒以内ならば
-						bus.IsSoon = true;
+						bus.isSoon = true;
 					}
 				} else {
-					bus.RemainDateStr = null;
-					bus.IsNext = false;
-					bus.IsSoon = false;
+					bus.remainDateStr = null;
+					bus.isNext = false;
+					bus.isSoon = false;
 				}
 
-				if (!bus.IsPast) {
+				if (!bus.isPast) {
 					filtered_buses.push(bus);
 				}
 			}

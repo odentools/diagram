@@ -4,22 +4,22 @@
 </div>
 <div class="timetable-info card" style="border-bottom: 1px solid {{route.color}};">
 	<p class="route-name">
-		{{route.RouteName}}
+		{{route.routePrefix}}&nbsp;{{route.routeName}}
 	</p>
 	<p class="dia-name">
-		{{route.DiaName}}&nbsp;ダイヤ
+		{{route.diaName}}&nbsp;ダイヤ
 	</p>
 	<hr/>
-	<p class="next-bus" ng-show="nextBus != null" ng-class="{'soon' : nextBus.IsSoon}">
+	<p class="next-bus" ng-show="nextBus != null" ng-class="{'soon' : nextBus.isSoon}">
 		<i class="fa fa-clock-o"></i>&nbsp;次の出発まで
-		<span >{{nextBus.RemainDateStr}}</span>
+		<span >{{nextBus.remainDateStr}}</span>
 	</p>
 </div>
 <ul class="timetable">
 	<li class="card" ng-repeat="item in buses">
-		<span class="dep-time">{{item.DepartureDate | date:'HH:mm'}}</span>
-		<span class="arr-loc">{{route.ArrivalLocation}} 行</span>
-		<span class="note">{{item.Note | substring:0:1}}</span>
+		<span class="dep-time">{{item.departureDate | date:'HH:mm'}}</span>
+		<span class="arr-loc">{{route.arrivalLocation}} 行</span>
+		<span class="note">{{item.note | substring:0:1}}</span>
 	</li>
 </ul>
 <!---->

@@ -100,6 +100,11 @@ app.controller('TimetableCtrl', function($scope, $routeParams, $timeout, Routes,
 					route_id,
 					new Date(),
 					function(buses) {
+						// ダイヤ名を代入
+						var dia_name = null;
+						if (buses != null && 0 < buses.length) {
+							$scope.route.diaName = buses[0].diaName;
+						}
 						// 全便の配列を書き換え
 						allBuses = buses;
 						// 将来便の配列を更新
@@ -128,6 +133,12 @@ app.controller('TimetableCtrl', function($scope, $routeParams, $timeout, Routes,
 
 		// 将来便の配列を書き換え
 		$scope.buses = Timetable.filterPresentBuses(allBuses);
+		if (0 < allBuses.length && $scope.buses == 0) { // 将来便が無ければ
+			// 路線情報および時刻表の更新
+			allBuses = null;
+			$scope.fetchTimetable($scope.routeId);
+			return;
+		}
 		// 次便を抽出
 		if (0 < $scope.buses.length) {
 			$scope.nextBus = $scope.buses[0];
