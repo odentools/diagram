@@ -579,7 +579,8 @@ function register() {
 		success: function(data, dataType) {
 
 			//console.log(JSON.parse(data));
-			alert("登録しました。");
+			alert("登録しました。\n再読み込みを行います。");
+			location.reload();
 
 		},
 		error: function(res, textStatus, xhr) {
