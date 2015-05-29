@@ -12,32 +12,48 @@
 	$json	= new JSON();
 	$mysqli	= new SQL_Session();
 	
-	// 取得の確認を行うリスト, Bindの順番をValで指定
-	$G_Parm = array ('route_id' => 0, 'date' => 1);
+	// ISO8601の生成
+	$Date = ", CONCAT(travelDate, 'T', departureTime, '+09:00') as departureDate, CONCAT(travelDate, 'T', arrivalTime, '+09:00') as arrivalDate";
 
-	if ( CheckGetParameter($G_Parm) ) {
+	// 不要なデータをフィルタリング
+	$Select = "departureTime, arrivalTime, note, diaName".$Date;
 
-		$BPrm = getBindParameter($G_Parm);
-		
-		// IDをInt型にキャスト
-		$BPrm[$G_Parm['route_id']] = (int)$BPrm[$G_Parm['route_id']];
+	// 開発要求の場合は全てを返す。
+	if(isset($_GET["develop"])) {
 
-		$Date = ", CONCAT(travelDate, 'T', departureTime, '+09:00') as departureDate, CONCAT(travelDate, 'T', arrivalTime, '+09:00') as arrivalDate";
-
-		// 不要なデータをフィルタリング
-		$Select = "departureTime, arrivalTime, note, diaName".$Date;
-
-		// 開発要求の場合は全てを返す。
-		if(isset($_GET["develop"])) {
-
-			$Select = "*".$Date;
-
-		}
-
-		$json->PushResult(
-			$mysqli->BSelect("Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id", $Select, "Schedule.routeId = ? AND Schedule.travelDate = ?", "is", $BPrm)
-		,"Dia");
+		$Select = "*".$Date;
 
 	}
+		
+	// 条件の設定
+	if ( isset($_GET["route_id"]) && isset($_GET["date"])) {
+		
+		$BPrm = array( 0 => (int)$_GET["route_id"], 1 => $_GET["date"] );
+		$where = "Schedule.routeId = ? AND Schedule.travelDate = ?";
+		$type = "is";
+		
+	} else if ( isset($_GET["route_id"]) ) {
+
+		$BPrm = array( 0 => (int)$_GET["route_id"] );
+		$where = "Schedule.routeId = ?";
+		$type = "i";
+
+	} else if ( isset($_GET["date"]) ) {
+
+		$BPrm = array( 9 => $_GET["date"] );
+		$where = "Schedule.travelDate = ?";
+		$type = "s";
+
+	} else {
+		
+		$where = "TRUE";
+		$type = null;
+		
+	}
+
+	$json->PushResult(
+		$mysqli->BSelect("Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id", $Select, $where, $type, $BPrm)
+	,"Dia");
+
 
 ?>
