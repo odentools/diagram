@@ -4,6 +4,17 @@
 
 var services = angular.module('Diagram.services', ['ngResource']);
 
+// 定数サービス
+services.factory('Constants', [function() {
+	var service = {
+		// WebAPIのベースURLを返す
+		getAPIEndpoint: function() {
+			return 'http://oecu.pw/api/1.2.1/';
+		}
+	};
+	return service;
+}]);
+
 // ヘルパサービス
 services.factory('Helpers', [function() {
 	var service = {
@@ -47,12 +58,12 @@ services.factory('Helpers', [function() {
 }]);
 
 // 路線リストサービス
-services.factory('Routes', ['$http', function($http) {
+services.factory('Routes', ['$http', 'Constants', function($http, Constants) {
 	var service = {
 		// 路線リストの取得
 		fetchAll: function(callback, opt_err_callback) {
 			// リクエスト
-			$http.get('http://oecu.pw/api/1.2.1/RouteList.json')
+			$http.get(Constants.getAPIEndpoint() + 'RouteList.json')
 				.success(function(data, status, headers, config) {
 					var list = data.RouteList;
 					for (var i = 0, l = list.length; i < l; i++) {
@@ -73,7 +84,7 @@ services.factory('Routes', ['$http', function($http) {
 		// 路線の取得
 		fetch: function(route_id, callback, opt_err_callback) {
 			// 指定された路線IDの路線をリクエスト
-			$http.get('http://oecu.pw/api/1.2.1/RouteList.json?id=' + route_id)
+			$http.get(Constants.getAPIEndpoint() + 'RouteList.json?id=' + route_id)
 				.success(function(data, status, headers, config) {
 					if (data.RouteList == null || data.RouteList.length <= 0) {
 						(callback(null));
@@ -110,13 +121,13 @@ services.factory('Routes', ['$http', function($http) {
 }]);
 
 // サービス定義: 時刻表
-services.factory('Timetable', ['$http', 'Helpers', function($http, Helpers) {
+services.factory('Timetable', ['$http', 'Helpers', 'Constants', function($http, Helpers, Constants) {
 	var service = {
 		// 時刻表の取得
 		fetch: function(dia_id, date, callback, opt_err_callback) {
 			// リクエスト
 			var date_str = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
-			$http.get('http://oecu.pw/api/1.2.1/Dia.json?route_id=' + dia_id + '&date=' + date_str)
+			$http.get(Constants.getAPIEndpoint() + 'Dia.json?route_id=' + dia_id + '&date=' + date_str)
 				.success(function(data, status, headers, config) {
 					var buses = [];
 					for (id in data.Dia) {
