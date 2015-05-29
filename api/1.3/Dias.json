@@ -1,0 +1,41 @@
+<?php
+/****************************************************
+ * ダイアWeb API
+ * Diaを扱います
+ * レスポンス JSON
+ ****************************************************/
+
+	include_once (dirname(__FILE__) ."/../../db/SQL_Session.php"); 
+	include_once (dirname(__FILE__) ."/../../db/json.php");
+	include_once (dirname(__FILE__) ."/../../lib/lib.php");
+
+	$json	= new JSON();
+	$mysqli	= new SQL_Session();
+	
+	// 取得の確認を行うリスト, Bindの順番をValで指定
+	$G_Parm = array ('route_id' => 0, 'date' => 1);
+
+	if ( CheckGetParameter($G_Parm) ) {
+
+		$BPrm = getBindParameter($G_Parm);
+		
+		// IDをInt型にキャスト
+		$BPrm[$G_Parm['route_id']] = (int)$BPrm[$G_Parm['route_id']];
+
+		// 不要なデータをフィルタリング
+		$Select = "departureTime, arrivalTime, note, diaName";
+
+		// 開発要求の場合は全てを返す。
+		if(isset($_GET["develop"])) {
+
+			$Select = "*";
+
+		}
+
+		$json->PushResult(
+			$mysqli->BSelect("Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id", $Select, "where Schedule.routeId = ? AND Schedule.travelDate = ?", "is", $BPrm)
+		,"Dia");
+
+	}
+
+?>
