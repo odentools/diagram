@@ -22,13 +22,15 @@
 		// IDをInt型にキャスト
 		$BPrm[$G_Parm['route_id']] = (int)$BPrm[$G_Parm['route_id']];
 
+		$Date = ", CONCAT(travelDate, 'T', departureTime, '+09:00') as departureDate, CONCAT(travelDate, 'T', arrivalTime, '+09:00') as arrivalDate";
+
 		// 不要なデータをフィルタリング
-		$Select = "departureTime, arrivalTime, note, diaName";
+		$Select = "departureTime, arrivalTime, note, diaName".$Date;
 
 		// 開発要求の場合は全てを返す。
 		if(isset($_GET["develop"])) {
 
-			$Select = "*";
+			$Select = "*".$Date;
 
 		}
 
