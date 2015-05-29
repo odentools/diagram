@@ -579,6 +579,7 @@ function register() {
 		success: function(data, dataType) {
 
 			//console.log(JSON.parse(data));
+			alert("登録しました。");
 
 		},
 		error: function(res, textStatus, xhr) {
