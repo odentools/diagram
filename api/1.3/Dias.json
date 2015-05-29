@@ -33,7 +33,7 @@
 		}
 
 		$json->PushResult(
-			$mysqli->BSelect("Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id", $Select, "where Schedule.routeId = ? AND Schedule.travelDate = ?", "is", $BPrm)
+			$mysqli->BSelect("Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id", $Select, "Schedule.routeId = ? AND Schedule.travelDate = ?", "is", $BPrm)
 		,"Dia");
 
 	}
