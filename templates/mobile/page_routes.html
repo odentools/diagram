@@ -1,0 +1,12 @@
+<!-- Route list page (RoutesCtrl) -->
+<div class="load" ng-show="isLoading">
+	<i class="fa fa-circle-o-notch fa-spin"></i>
+</div>
+<ul class="routes">
+	<a ng-repeat="item in routes" ng-href="#/routes/{{item.id}}">
+		<li class="card" style="border-left: 2px solid {{item.color}};">
+			{{item.routePrefix}}&nbsp;{{item.routeName}}
+		</li>
+	</a>
+</ul>
+<!---->

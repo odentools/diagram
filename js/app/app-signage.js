@@ -63,13 +63,15 @@ app.filter('substring', function() {
 /**
 	時刻表ページ用コントローラ
 **/
-app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagrams, Helpers) {
-	// 当該路線のデータ
+app.controller('TimetableCtrl', function($scope, $timeout, $window, Routes, Timetable, Helpers) {
+	// 全便の配列
+	var allBuses = [];
+	// 将来便の配列
+	$scope.buses = [];
+	// 次便
+	$scope.nextBus = null;
+	// 選択された路線
 	$scope.route = null;
-	// 次の便
-	$scope.next_dia = null;
-	// 時刻表データ (便の配列)
-	var diagrams = [];
 
 	// 路線情報および時刻表の取得
 	$scope.fetchDiagrams = function(route_id) {
@@ -80,7 +82,7 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 				$scope.route = route;
 				if (route == null) {
 					// ページを再読み込み
-					console.log("当該ルートがありません");
+					console.log("当該路線がありません");
 					$timeout(function(){
 						$window.location.reload();
 					}, 10000);
@@ -88,8 +90,8 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 				}
 
 				// 時刻表を取得
-				Diagrams.fetch(3, function(diagrams_) {
-					diagrams = diagrams_;
+				Timetable.fetch(route_id, new Date(), function(buses) {
+					allBuses = buses;
 				});
 			},
 			function(data) { // エラー時
@@ -103,49 +105,25 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 	};
 
 	// 次の便＆残りの便の更新
-	$scope.updateDiagrams = function() {
-		if (diagrams == null) {
+	$scope.updateBuses = function() {
+		if (allBuses == null) {
 			return
 		}
 
-		var now = new Date();
-		var next_dia = null;
-
-		$scope.diagrams = [];
-
-		for (var i = 0, l = diagrams.length; i < l; i++) {
-			var dia = diagrams[i];
-
-			// 発車時刻をDate型へ変換
-			dia.departure_date = Helpers.timeStrToDate(dia.DepartureTime);
-
-			// 過ぎた便であるかどうか
-			if (now.getDate() != dia.departure_date.getDate()) { // 明日の便
-				dia.is_past = true;
-			} else if (dia.departure_date < now) { // 今日の過ぎた便
-				dia.is_past = true;
-				// 明日の便にする
-				dia.departure_date.setDate(dia.departure_date.getDate() + 1);
-			} else { // 過ぎていない便
-				dia.is_past = false;
-			}
-
-			// 次の便であるかどうか
-			if (!dia.is_past && next_dia == null) {
-				// 残り時間を計算
-				dia.remain_date_str = Helpers.miliSecToTimeStr(Helpers.getRemainMiliSecByDate(dia.departure_date), false);
-				// 次の便として保持
-				next_dia = dia;
-				dia.is_next = true;
-			} else {
-				dia.remain_date_str = null;
-				dia.is_next = false;
-			}
-
-			$scope.diagrams.push(dia);
+		// 将来便の配列を書き換え
+		$scope.buses = Timetable.filterPresentBuses(allBuses);
+		if (0 < allBuses.length && $scope.buses == 0) { // 将来便が無ければ
+			// 路線情報および時刻表の更新
+			allBuses = null;
+			$scope.fetchDiagrams($scope.routeId);
+			return;
 		}
-
-		$scope.next_dia = next_dia
+		// 次便を抽出
+		if (0 < $scope.buses.length) {
+			$scope.nextBus = $scope.buses[0];
+		} else {
+			$scope.nextBus = null;
+		}
 	};
 
 	/* ---- */
@@ -161,7 +139,7 @@ app.controller('DiagramCtrl', function($scope, $timeout, $window, Routes, Diagra
 	// 更新タイマーを開始
 	var func_update = function() {
 		// 次の便および残りの便を更新
-		$scope.updateDiagrams();
+		$scope.updateBuses();
 		// タイマーを再始動
 		$timeout(func_update, 1000);
 	};

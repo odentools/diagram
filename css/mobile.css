@@ -1,0 +1,235 @@
+@charset "utf-8";
+
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #eee;
+	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-size: 20px;
+	font-weight: bold;
+	color: #111;
+}
+
+a, a:link, a:visited {
+	color: #111;
+	text-decoration: none;
+}
+
+p, ul, li {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+}
+
+ul {
+	min-height: 50px;
+}
+
+/**
+	読み込み中表示
+**/
+
+.load {
+	display: table-cell;
+	color: gray;
+	font-size: 200%;
+	height: 100%;
+	margin-top: 10px;
+	position: absolute;
+	text-align: center;
+	vertical-align: middle;
+	width: 100%;
+	z-index: 10000;
+}
+
+/**
+	カード
+**/
+
+.card {
+	background: white;
+	border-radius: 3px;
+	box-shadow: 0 1px 2px #aaa;
+	margin: 0 0.5rem 0.5rem;
+	padding: 1.5rem;
+	user-select: none;
+}
+li.card {
+	animation: fly-in-from-left 0.5s 0.5s ease both;
+		-webkit-animation: fly-in-from-left 0.5s 0.5s ease both;
+	transform-origin: top left;
+		-webkit-transform-origin: top left;
+}
+li.card:nth-child(even) {
+	animation-name: fly-in-from-right;
+		-webkit-animation-name: fly-in-from-right;
+	animation-delay: 0.5s;
+		-webkit-animation-delay: 0.5s;
+	transform-origin:top right;
+		-webkit-transform-origin:top right;
+}
+
+.card hr {
+	border-top: 1px solid #eee;
+	border-bottom: none;
+	margin-left: -1.5rem;
+	margin-right: -1.5rem;
+}
+
+/**
+	ヘッダー
+**/
+
+header {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	width: 100%;
+}
+
+header div {
+	padding: .7em 0px;
+	color: #444;
+	text-align: center;
+	background: #fefefe;
+	border-bottom: 2px solid #599900;
+}
+
+/**
+	フッター
+**/
+
+footer {
+	bottom: 0px;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	width: 100%;
+}
+
+footer div {
+	color: gray;
+	font-size: 80%;
+	padding: 0.7em 0px;
+	text-align: center;
+	background: #fefefe;
+}
+
+/**
+	路線リスト
+**/
+
+ul.routes {
+	list-style-type: none;
+	margin-top: 1rem;
+}
+
+ul.routes li {
+
+}
+
+/**
+	時刻表
+**/
+
+/* 時刻表情報 */
+div.timetable-info {
+	animation: fly-in-from-left 0.5s 0.5s ease both;
+		-webkit-animation: fly-in-from-left 0.5s 0.5s ease both;
+	margin-top: 5px;
+	transform-origin: top left;
+		-webkit-transform-origin: top left;
+}
+
+div.timetable-info .route-name {
+
+}
+
+div.timetable-info .dia-name {
+	color: gray;
+	font-size: 80%;
+}
+
+/* 次発情報 */
+div.timetable-info .next-bus {
+	text-align: center;
+	padding-top: 5px;
+	margin-bottom: -5px;
+}
+div.timetable-info .soon {
+	color: #F44336;
+	text-decoration: blink;
+		-webkit-animation-name: blinker;
+		-webkit-animation-duration: 0.6s;
+		-webkit-animation-iteration-count: infinite;
+		-webkit-animation-timing-function: ease-in;
+		-webkit-animation-direction: alternate;
+}
+
+/* 便リスト */
+ul.timetable {
+	list-style-type: none;
+}
+
+ul.timetable li {
+	vertical-align: middle;
+}
+
+ul.timetable li span.dep-time {
+
+}
+
+ul.timetable li span.arr-loc {
+	font-size: 80%;
+	padding-left: 0.5rem;
+	padding-right: 1rem;
+}
+
+ul.timetable li span.note {
+	color: gray;
+	font-size: 80%;
+	font-weight: 400;
+	line-height: 2.5;
+}
+
+/**
+	アニメーション定義
+**/
+
+@keyframes fly-in-from-left {
+	from {
+		transform: translateY(15rem) rotate(15deg);
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes fly-in-from-left {
+	from {
+		transform: translateY(15rem) rotate(15deg);
+		opacity: 0;
+	}
+}
+
+@keyframes fly-in-from-right {
+	from {
+		transform: translateY(15rem) rotate(-15deg);
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes fly-in-from-right {
+	from {
+		transform: translateY(15rem) rotate(-15deg);
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes blinker {
+	from {
+		opacity: 1.0;
+	}
+	to {
+		opacity: 0.0;
+	}
+}
