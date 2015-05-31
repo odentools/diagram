@@ -10,6 +10,9 @@
 		{{route.diaName}}&nbsp;ダイヤ
 	</p>
 	<hr/>
+	<p class="next-bus"  ng-show="buses != null && buses.length == 0">
+		本日の営業は終了しました
+	</p>
 	<p class="next-bus" ng-show="nextBus != null" ng-class="{'soon' : nextBus.isSoon}">
 		<i class="fa fa-clock-o"></i>&nbsp;次の出発まで
 		<span >{{nextBus.remainDateStr}}</span>
