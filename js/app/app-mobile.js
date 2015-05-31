@@ -74,7 +74,7 @@ app.controller('TimetableCtrl', function($scope, $routeParams, $timeout, Routes,
 	// 全便の配列
 	var allBuses = [];
 	// 将来便の配列
-	$scope.buses = [];
+	$scope.buses = null;
 	// 次便
 	$scope.nextBus = null;
 	// 選択された路線
@@ -133,12 +133,6 @@ app.controller('TimetableCtrl', function($scope, $routeParams, $timeout, Routes,
 
 		// 将来便の配列を書き換え
 		$scope.buses = Timetable.filterPresentBuses(allBuses);
-		if (0 < allBuses.length && $scope.buses == 0) { // 将来便が無ければ
-			// 路線情報および時刻表の更新
-			allBuses = null;
-			$scope.fetchTimetable($scope.routeId);
-			return;
-		}
 		// 次便を抽出
 		if (0 < $scope.buses.length) {
 			$scope.nextBus = $scope.buses[0];

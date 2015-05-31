@@ -6,39 +6,7 @@
 	アプリケーションモジュール
 **/
 
-var app = angular.module('SignageApp', ['Diagram.services']);
-
-// ディレクティブ定義: autoResize
-app.directive('autoResize', function($timeout, $compile) {
-	return {
-		link: function(scope, element, attrs){
-			var $elem = $(element);
-			var func_resize = function() {
-				if (!$elem.is(':visible')) { // 非表示のオブジェクトは除外
-					return;
-				}
-				// 現在の幅を取得
-				var before_width = $elem.offset().left + $elem.outerWidth();
-				// リサイズ
-				for (var size = 10; size < 1000; size += 10) {
-					$elem.css('fontSize', size+'px');
-					var w = $elem.offset().left + $elem.outerWidth();
-					if (before_width == w || $(window).width() <= w) {
-						size -= 20;
-						$elem.css('fontSize', size+'px');
-						break;
-					}
-					before_width = w;
-				}
-			};
-			$(window).resize(function(){
-				window.setTimeout(func_resize, 100);
-			});
-			window.setInterval(func_resize, 10000);
-			window.setTimeout(func_resize, 1000);
-		}
-	};
-});
+var app = angular.module('SignageApp', ['Diagram.services', 'autoResize']);
 
 // フィルタ定義: zpadding
 app.filter('zpadding', function() {
@@ -72,6 +40,8 @@ app.controller('TimetableCtrl', function($scope, $timeout, $window, Routes, Time
 	$scope.nextBus = null;
 	// 選択された路線
 	$scope.route = null;
+	// 取得日時
+	$scope.fetchedAt = null;
 
 	// 路線情報および時刻表の取得
 	$scope.fetchDiagrams = function(route_id) {
@@ -90,8 +60,13 @@ app.controller('TimetableCtrl', function($scope, $timeout, $window, Routes, Time
 				}
 
 				// 時刻表を取得
-				Timetable.fetch(route_id, new Date(), function(buses) {
+				var date = new Date();
+				Timetable.fetch(route_id, date, function(buses) {
 					allBuses = buses;
+					$scope.fetchedAt = date;
+				}, function(data) {
+					allBuses = [];
+					$scope.fetchedAt = date;
 				});
 			},
 			function(data) { // エラー時
@@ -107,17 +82,19 @@ app.controller('TimetableCtrl', function($scope, $timeout, $window, Routes, Time
 	// 次の便＆残りの便の更新
 	$scope.updateBuses = function() {
 		if (allBuses == null) {
-			return
+			return;
 		}
 
-		// 将来便の配列を書き換え
-		$scope.buses = Timetable.filterPresentBuses(allBuses);
-		if (0 < allBuses.length && $scope.buses == 0) { // 将来便が無ければ
+		if ($scope.fetchedAt != null && $scope.fetchedAt.getDate() != new Date().getDate()) { // 日付が変更された場合
 			// 路線情報および時刻表の更新
 			allBuses = null;
 			$scope.fetchDiagrams($scope.routeId);
 			return;
 		}
+
+		// 将来便の配列を書き換え
+		$scope.buses = Timetable.filterPresentBuses(allBuses);
+
 		// 次便を抽出
 		if (0 < $scope.buses.length) {
 			$scope.nextBus = $scope.buses[0];
