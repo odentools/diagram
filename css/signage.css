@@ -34,14 +34,24 @@ li {
 	display: block;
 }
 
+/* メッセージ */
+
+.message {
+	text-align: center;
+}
+
+.message .end-day {
+	line-height: 1.3;
+}
+
+/* 便のブロック */
+
 .content {
 	list-style: none;
 	width: 100%;
 	padding: 0;
 	margin: 0;
 }
-
-/* 便のブロック */
 
 .content li {
 	padding: 15px 15px;
