@@ -18,7 +18,7 @@ class	JSON{
 
 			case 500:
 				$this->result['status'] = array("message"=>"Error: Internal Server Error","code"=>500);				
-				header("HTTP/1.0 500 Internal Server Error");
+				header("HTTP/1.1 500 Internal Server Error");
 				break;
 
 			case 404:
