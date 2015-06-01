@@ -14,9 +14,12 @@ class	JSON{
 
 	function	__destruct() {
 
-		$this->CheckStatus();
-
 		switch($this->StatusCode) {
+
+			case 500:
+				$this->result['status'] = array("message"=>"Error: Internal Server Error","code"=>500);				
+				header("HTTP/1.0 500 Internal Server Error");
+				break;
 
 			case 404:
 				$this->result['status'] = array("message"=>"Error: Not found","code"=>404);
@@ -35,16 +38,17 @@ class	JSON{
 
 	}
 
-
-	function	CheckStatus() {
-
-		if(is_null($this->result)) $this->StatusCode = 404;
-
-	}
-
 	function	PushResult(&$arr, $key=null) {
 
-		if(is_array($arr) && !empty($arr)) $this->result[$key] = &$arr;
+		if ( is_array($arr) ) {
+
+			 $this->result[$key] = &$arr;
+
+		} else {
+
+			$this->StatusCode = 500;
+
+		}
 
 	}
 
