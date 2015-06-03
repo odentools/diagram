@@ -5,7 +5,7 @@ include_once(dirname(__FILE__) ."/../api/1.3/SQL_Session.php");
 
 $mysqli = new SQL_Session();
 
-// ダイアグラム登録画面の処理
+// ダイアグラム
 if ( isset($_GET['diagram']) ) {
 
 	// 必要なパラメータを指定
@@ -88,7 +88,7 @@ if ( isset($_GET['diagram']) ) {
 
 } 
 
-// スケージュール登録画面の処理
+// スケージュール
 if ( isset($_GET['schedule']) ) {
 
 	$P_Parm = array("postData" => "iis", "routeId" => null );
