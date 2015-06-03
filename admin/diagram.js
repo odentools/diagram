@@ -1,5 +1,5 @@
 const SERVER_URL = "http://"+location.host+"/";
-const SERVER_APIURL = SERVER_URL+"api/1/";
+const SERVER_APIURL = SERVER_URL+"api/1.3/";
 
 var selected;
 
@@ -341,17 +341,17 @@ function getRouteList() {
 	$.ajax({
 
 		type: "GET",
-		url: SERVER_APIURL+"RouteList.json?min",
+		url: SERVER_APIURL+"Routes.json",
 		async: false, // ブラウザロック有効
 		dataType: "json",
 
 		success: function(data, dataType) {
 
-				data.RouteList.forEach(function(val) {
+				data.Route.forEach(function(val) {
 
 				var element = document.createElement("option");
 				element.value = val.id;
-				element.innerHTML = val.RouteName;
+				element.innerHTML = val.routePrefix +'　'+ val.routeName;
 				document.getElementById("routeName").appendChild(element);
 
 			});
@@ -390,28 +390,29 @@ function routeNameChange(obj) {
 		$.ajax({
 
 			type: "GET",
-			url: SERVER_APIURL+"RouteList.json?id="+obj.options[obj.selectedIndex].value,
+			url: SERVER_APIURL+"Routes.json?id="+obj.options[obj.selectedIndex].value,
 			async: false, // ブラウザロック有効
 			dataType: "json",
 
 			success: function(data, dataType) {
 
-				data.RouteList.forEach(function(val) {
+				data.Route.forEach(function(val) {
 
-					document.diagram.routeNameNew.value = val.RouteName;
-					document.diagram.management.value = val.Management;
-					document.diagram.departureLocation.value = val.DepartureLocation;
-					document.diagram.arrivalLocation.value = val.ArrivalLocation;
+					document.diagram.routePrefixNew.value = val.routePrefix;
+					document.diagram.routeNameNew.value = val.routeName;
+					document.diagram.management.value = val.management;
+					document.diagram.departureLocation.value = val.departureLocation;
+					document.diagram.arrivalLocation.value = val.arrivalLocation;
 					document.diagram.diaNameNew.value = "";
 
 				});
 
 
-				// ダイアグループの(一覧)取得
+				// ダイアの(一覧)取得
 				$.ajax({
 
 					type: "GET",
-					url: SERVER_APIURL+"DiaGroup.json?RouteListT_ID_="+obj.options[obj.selectedIndex].value,
+					url: SERVER_APIURL+"Dia.json?routeId="+obj.options[obj.selectedIndex].value,
 					async: false, // ブラウザロック有効
 					dataType: "json",
 
@@ -419,11 +420,11 @@ function routeNameChange(obj) {
 
 						$("#list").clearGridData();
 
-						data.DiaGroup.forEach(function(a) {
+						data.Dia.forEach(function(val) {
 
 							var element = document.createElement("option");
-							element.value = a.id;
-							element.innerHTML = a.DiaName;
+							element.value = val.id;
+							element.innerHTML = val.diaName;
 							document.getElementById("diaName").appendChild(element);
 
 						});
@@ -433,7 +434,7 @@ function routeNameChange(obj) {
 
 						if(res.status==404) {
 
-							alert("ダイヤグループがありません\n登録して下さい");
+							alert("ダイヤがありません\n登録して下さい");
 
 						} else {
 
@@ -482,7 +483,7 @@ function diaNameChange(obj) {
 		$.ajax({
 
 			type: "GET",
-			url: SERVER_APIURL+"Dia.json?DiaGroupT_ID_="+obj.options[obj.selectedIndex].value,
+			url: SERVER_APIURL+"Bus.json?diaId="+obj.options[obj.selectedIndex].value,
 			async: false, // ブラウザロック有効
 			dataType: "json",
 
@@ -490,12 +491,12 @@ function diaNameChange(obj) {
 
 				$("#list").clearGridData();
 
-				data.Dia.forEach(function(val) {
+				data.Bus.forEach(function(val) {
 
 					$("#list").addRowData(undefined, {
-						departureTime:val.DepartureTime.substr(0, 5), 
-						arrivalTime:val.ArrivalTime.substr(0, 5), 
-						note:val.Note
+						departureTime:val.departureTime.substr(0, 5), 
+						arrivalTime:val.arrivalTime.substr(0, 5), 
+						note:val.note
 					});
 
 				});
@@ -532,14 +533,15 @@ function diaNameChange(obj) {
 // DB登録
 function register() {
 
-	var DiaT = new Array();
+	var bus = new Array();
 	var rowIds = jQuery("#list").jqGrid('getDataIDs');
 	for (var i = 0; i < rowIds.length; i++) {
 
 		var row = {
-			DepartureTime:$('#list').getRowData(rowIds[i]).departureTime,
-			ArrivalTime:$('#list').getRowData(rowIds[i]).arrivalTime,
-			Note:$('#list').getRowData(rowIds[i]).note
+			// diaId: parseInt(document.diagram.diaNameList.value),	// DB側で自動的に引き継ぐ為不要
+			departureTime: $('#list').getRowData(rowIds[i]).departureTime,
+			arrivalTime: $('#list').getRowData(rowIds[i]).arrivalTime,
+			note: $('#list').getRowData(rowIds[i]).note
 		};
 
 		for (var keyString in row) {
@@ -549,29 +551,36 @@ function register() {
 			}
 		}
 
-		DiaT.push(row);
+		bus.push(row);
 
 	}
 
-	var RouteListT = {
-		id:parseInt(document.diagram.routeNameList.value),
-		RouteName:document.diagram.routeNameNew.value,
-		Management:document.diagram.management.value,
-		DepartureLocation:document.diagram.departureLocation.value,
-		ArrivalLocation:document.diagram.arrivalLocation.value
+	var route = {
+		id: parseInt(document.diagram.routeNameList.value),
+		routePrefix: document.diagram.routePrefixNew.value,
+		routeName: document.diagram.routeNameNew.value,
+		management: document.diagram.management.value,
+		departureLocation: document.diagram.departureLocation.value,
+		arrivalLocation: document.diagram.arrivalLocation.value,
+		departureLocationLat: null,		// 未実装
+		departureLocationLng: null,		// 未実装
+		arrivalLocationLat: null,		// 未実装
+		arrivalLocationLng: null		// 未実装
+
 	};
 
-	var DiaGroupT = {
-		id:parseInt(document.diagram.diaNameList.value),
-		DiaName:document.diagram.diaNameNew.value
+	var dia = {
+		id: parseInt(document.diagram.diaNameList.value),
+		// routeId: parseInt(document.diagram.routeNameList.value),	// DB側で自動的に引き継ぐ為不要
+		diaName: document.diagram.diaNameNew.value
 	};
 
-	var postData = {'RouteListT':RouteListT, 'DiaGroupT':DiaGroupT, 'DiaT':DiaT};
+	var postData = {'Route':route, 'Dia':dia, 'Bus':bus};
 
 	$.ajax({
 
 		type: "POST",
-		url: SERVER_URL+"db/T.php",
+		url: SERVER_URL+"db/T.php?diagram",
 		async: false, // ブラウザロック有効
 		data: postData,
 		dataType: "text",

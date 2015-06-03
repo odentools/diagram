@@ -1,4 +1,5 @@
 <?php
+
 include_once(dirname(__FILE__) ."/SQL_Config.php");
 
 class	SQL_Session{
@@ -94,17 +95,17 @@ class	SQL_Session{
 
 	/**
 	 * @fn
-	 * ダイアテーブルのレコードを削除する
-	 * @breaf ダイアテーブルのレコード削除する
-	 * @param ($id) ダイアテーブルのレコードID
+	 * 便テーブルのレコードを削除する
+	 * @breaf 便テーブルのレコード削除する
+	 * @param ($id) 便テーブルのレコードID
 	 * @warning レコードの削除については必ず新規のメゾットで作成する事.
 	 * @return なし
 	 */
-	function	BDiaTDelete($id) {
+	function	BBusDelete($id) {
 		
-		$table="DiaT";
+		$table="Bus";
 		$type = "i";
-		$where = "DiaGroupT_ID_=?";
+		$where = "diaId=?";
 
 		$query = "delete from ".$table." where ".$where;
 
