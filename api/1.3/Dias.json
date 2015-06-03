@@ -40,7 +40,7 @@
 
 	} else if ( isset($_GET["date"]) ) {
 
-		$BPrm = array( 9 => $_GET["date"] );
+		$BPrm = array( 0 => $_GET["date"] );
 		$where = "Schedule.travelDate = ?";
 		$type = "s";
 
