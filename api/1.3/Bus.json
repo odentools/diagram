@@ -1,0 +1,28 @@
+<?php
+/****************************************************
+ * 便Admin API
+ * Busを扱います
+ * レスポンス JSON
+ ****************************************************/
+
+	include_once(dirname(__FILE__) ."/SQL_Session.php"); 
+	include_once(dirname(__FILE__) ."/../../lib/lib.php");
+ 	include_once(dirname(__FILE__) ."/../../db/json.php");
+
+	$json = new JSON();
+
+	$mysqli = new SQL_Session();
+
+	$G_Parm = array('diaId' => NULL);
+
+	if(CheckGetParameter($G_Parm)) {
+
+		$BPrm = array(0=>(int)$_GET["diaId"]);
+	
+		$result = $mysqli->BSelect("Bus", "*", "diaId=?", "i", $BPrm);
+
+		$json->PushResult($result, "Bus");
+
+	}
+
+?>

@@ -1,0 +1,30 @@
+<?php
+/****************************************************
+ * ダイアAdmin API
+ * Diaを扱います
+ * レスポンス JSON
+ ****************************************************/
+
+	include_once(dirname(__FILE__) ."/SQL_Session.php"); 
+	include_once(dirname(__FILE__) ."/../../lib/lib.php");
+ 	include_once(dirname(__FILE__) ."/../../db/json.php");
+
+	$json = new JSON();
+
+	$mysqli = new SQL_Session();
+
+	$Select = "id, diaName";
+
+	$G_Parm = array('routeId' => NULL);
+
+	if(CheckGetParameter($G_Parm)) {
+
+		$BPrm = array(0=>(int)$_GET["routeId"]);
+	
+		$result = $mysqli->BSelect("Dia", $Select, "routeId=?", "i", $BPrm);
+
+		$json->PushResult($result, "Dia");
+
+	}
+
+?>

@@ -1,82 +1,95 @@
 <?php
 
 include_once(dirname(__FILE__) ."/../lib/lib.php");
-include_once(dirname(__FILE__) ."/SQL_Session.php");
+include_once(dirname(__FILE__) ."/../api/1.3/SQL_Session.php");
 
 $mysqli = new SQL_Session();
 
-if(!isset($_GET['schedule'])) {
+// ダイアグラム登録画面の処理
+if ( isset($_GET['diagram']) ) {
 
-$P_Parm = array("RouteListT" => "ssss", "DiaGroupT" => "is");
+	// 必要なパラメータを指定
+	$P_Parm = array("Route" => "sssssdddd", "Dia" => "is");
 
-if(CheckPostParameter($P_Parm)) {
+	// パラメータが一致しない場合は、実行しない。
+	if ( CheckPostParameter($P_Parm) ) {
+
+		$result = null;
 	
-	$result = null;
-	
-	$P_Parm = array_merge($P_Parm, array("DiaT" => "isss"));
+		// 取得するパラメータを追加
+		$P_Parm = array_merge($P_Parm, array("Bus" => "isss"));
 
-	$P_Data = GetPostParameter($P_Parm);
+		$P_Data = GetPostParameter($P_Parm);
 
-	// 路線リストテーブル新規
-	if($P_Data["RouteListT"]["id"] == "-1") {
+		// 路線リストテーブル新規
+		if ( (int)$P_Data["Route"]["id"] == -1 ) {
 
-		unset($P_Data["RouteListT"]["id"]);
+			// 新規登録の場合IDを排除
+			unset($P_Data["Route"]["id"]);
 
-		$RouteListT_id = $mysqli->NewRecordAutoID("RouteListT", $P_Parm["RouteListT"], $P_Data["RouteListT"]);
-		$result = array("RouteListT_id"=>$RouteListT_id);
+			$routeId = $mysqli->NewRecordAutoID("Route", $P_Parm["Route"], $P_Data["Route"]);
+
+			$result = array("routeId" => (int)$routeId);
+
+		} else {
+		// 路線リストテーブル更新
+
+			// Updateする場合は、whereにIDが入るため最後にiを付け足す。
+			$type = $P_Parm["Route"].'i';
+
+			$mysqli->BUpdate("Route", $type, $P_Data["Route"]);
+			
+			$routeId = $P_Data["Route"]["id"];
+			
+			$result = array("routeId" => (int)$routeId);
+
+		}
+
+
+		// ダイアテーブル新規 
+		if ( (int)$P_Data["Dia"]["id"] == -1 ) {
+
+			// 新規登録の場合IDを排除
+			unset($P_Data["Dia"]["id"]);
+
+			$diaId = $mysqli->NewRecordAutoID("Dia", $P_Parm["Dia"], array_merge($P_Data["Dia"], array("routeId" => $result['routeId'])));
+
+			$result = array_merge((array)$result, array("diaId" => $diaId));
+
+		} else {
+		// ダイアテーブル更新
+
+			// Updateする場合は、whereにIDが入るため最後にiを付け足す。
+			// $type = $P_Parm["Dia"].'i';	// Todo: 引数としてkeyに優先度を与える必要がある。
+			$type ="sii";
+
+			// *インデックスは更新しなくてもいいので必要な連想配列のキーのみでも動作します
+			$mysqli->BUpdate("Dia", $type, array_merge($P_Data["Dia"], array("routeId" => $result['routeId'])));
+
+			$diaId = $P_Data["Dia"]["id"];
+			
+			$result = array("diaId" => (int)$diaId);
+
+		}
 		
-		
-	// 路線リストテーブル更新
-	} else {
-		
-		$type = "ssssi";
+		// 便テーブル削除
+		$mysqli->BBusDelete($result["diaId"]);
 
-		$BPrm = $P_Data["RouteListT"];
+		// ダイアテーブル更新
+		foreach((array)$P_Data["Bus"] as $key => $val) {
 
-		$mysqli->BUpdate("RouteListT", $type, $BPrm);
+			$mysqli->NewRecordAutoID("Bus", $P_Parm["Bus"], array_merge($val, array("diaId" => $result['diaId'])));
 
-		$RouteListT_id = (int)$P_Data["RouteListT"]["id"];
+		}
+
+		echo json_encode($result);
 
 	}
 
-	// ダイアグループテーブル新規 
-	if($P_Data["DiaGroupT"]["id"] == "-1") {
-	
-		unset($P_Data["DiaGroupT"]["id"]);
+} 
 
-		$DiaGroupT_id = $mysqli->NewRecordAutoID("DiaGroupT", $P_Parm["DiaGroupT"], array_merge($P_Data["DiaGroupT"], array("RouteListT_ID_"=>$RouteListT_id)));
-		$result = array_merge((array)$result, array("DiaGroupT_id"=>$DiaGroupT_id));
-
-
-	// ダイアグループテーブル更新
-	} else {
-
-		$type = "si";
-
-		$BPrm = $P_Data["DiaGroupT"];
-
-		$mysqli->BUpdate("DiaGroupT", $type, $BPrm);
-
-		$DiaGroupT_id = (int)$P_Data["DiaGroupT"]["id"];
-
-	}
-	
-	// ダイアテーブル削除
-	$mysqli->BDiaTDelete($DiaGroupT_id);
-	
-	// ダイアテーブル更新
-	foreach((array)$P_Data["DiaT"] as $key => $val) {
-
-		$mysqli->NewRecordAutoID("DiaT", $P_Parm["DiaT"], array_merge($val, array("DiaGroupT_ID_"=>$DiaGroupT_id)));
-
-	}
-		
-	echo json_encode($result);
-
-}
-
-// スケージュール登録
-} else {
+// スケージュール登録画面の処理
+if ( isset($_GET['schedule']) ) {
 
 	$P_Parm = array("postData" => "iis", "routeId" => null );
 
