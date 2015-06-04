@@ -1,0 +1,29 @@
+{
+  "name": "diagram",
+  "version": "1.0.0",
+  "description": "Timetable API and webpage for Bus of OECU",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.12.4",
+    "mysql": "^2.7.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "nodemon": "^1.3.7",
+    "supertest": "^1.0.1"
+  },
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "mocha --recursive --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/odentools/diagram.git"
+  },
+  "author": "OdenTools",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/odentools/diagram/issues"
+  },
+  "homepage": "https://github.com/odentools/diagram"
+}
