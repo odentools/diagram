@@ -17,7 +17,7 @@
 
 
 const SERVER_URL = "http://"+location.host+"/";
-const SERVER_APIURL = SERVER_URL+"api/1.1/";
+const SERVER_APIURL = SERVER_URL+"api/1.3/";
 
 $(document).ready(function() {
 		
@@ -96,26 +96,26 @@ function register() {
 	var events = $('#calendar').fullCalendar('clientEvents');
 
 	var element = document.getElementById("routeName")
-	var RouteListT_ID = element.options[element.selectedIndex].value;
+	var routeId = element.options[element.selectedIndex].value;
 
 	if ( $.isArray(events) ) {
 
 		events.forEach ( function(val, index) {
 
-			var DiaGroupT_ID = val.title.split(":")[0];
+			var diaId = val.title.split(":")[0];
 
 			var start = new Date ( val.start._d.valueOf () );
 			var startDay = [start.getFullYear(), ( '0' + (start.getMonth() + 1) ).slice( -2 ), ( '0' + start.getDate() ).slice( -2 )].join( '-' );
 
 			// 全てのダイアグループが一日であると過程した処理
 			// ToDo: 期間の存在するeventでなければendは、nullとなるのでこれを元に処理をする。
-			postData.push({RouteListT_ID_:RouteListT_ID, DiaGroupT_ID_:DiaGroupT_ID, TravelDate:startDay});
+			postData.push({routeId:routeId, diaId:diaId, travelDate:startDay});
 
 		});
 		
 	}
 
-	postData= {postData:postData, routeId:RouteListT_ID};
+	postData= {postData:postData, routeId:routeId};
 
 	$.ajax({
 
@@ -138,8 +138,8 @@ function register() {
 		}
 
 	});
-}
 
+}
 
 /* 路線リストの(一覧)取得
  */
@@ -148,17 +148,17 @@ function getRouteList() {
 	$.ajax({
 
 		type: "GET",
-		url: SERVER_APIURL+"RouteList.json?min",
+		url: SERVER_APIURL+"Routes.json",
 		async: false, // ブラウザロック有効
 		dataType: "json",
 
 		success: function(data, dataType) {
 
-				data.RouteList.forEach(function(val) {
+				data.Route.forEach(function(val) {
 
 				var element = document.createElement("option");
 				element.value = val.id;
-				element.innerHTML = val.RouteName;
+				element.innerHTML = val.routePrefix +'　'+ val.routeName;
 				document.getElementById("routeName").appendChild(element);
 
 			});
@@ -216,32 +216,34 @@ function routeNameChange(obj) {
 	$.ajax({
 
 		type: "GET",
-		url: SERVER_APIURL+"RouteList.json?id="+obj.options[obj.selectedIndex].value,
+		url: SERVER_APIURL+"Routes.json?id="+obj.options[obj.selectedIndex].value,
 		async: false, // ブラウザロック有効
 		dataType: "json",
 
 		success: function(data, dataType) {
 
-			data.RouteList.forEach(function(val) {
-				document.diagram.management.value = val.Management;
-				document.diagram.departureLocation.value = val.DepartureLocation;
-				document.diagram.arrivalLocation.value = val.ArrivalLocation;
+			data.Route.forEach(function(val) {
+
+					document.diagram.management.value = val.management;
+					document.diagram.departureLocation.value = val.departureLocation;
+					document.diagram.arrivalLocation.value = val.arrivalLocation;
+
 			});
 
-			// ダイアグループの(一覧)取得
+			// ダイアの(一覧)取得
 			$.ajax({
 
 				type: "GET",
-				url: SERVER_APIURL+"DiaGroup.json?RouteListT_ID_="+obj.options[obj.selectedIndex].value,
+				url: SERVER_APIURL+"Dia.json?routeId="+obj.options[obj.selectedIndex].value,
 				async: false, // ブラウザロック有効
 				dataType: "json",
 
 				success: function(data, dataType) {
 
-					data.DiaGroup.forEach(function(a) {
+					data.Dia.forEach(function(a) {
 						var element = document.createElement("div");
 						element.className = 'fc-event';
-						element.innerHTML = a.id + ': ' + a.DiaName;
+						element.innerHTML = a.id + ': ' + a.diaName;
 						document.getElementById("dias").appendChild(element);
 					});
 					
