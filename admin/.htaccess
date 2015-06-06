@@ -1,0 +1,10 @@
+AuthUserFile /var/www/.htpasswd
+AuthGroupFile /dev/null
+AuthName "Secret Area"
+AuthType Basic
+
+require valid-user
+
+<Files ~ "^.(htpasswd|htaccess)$">
+    deny from all
+</Files>
