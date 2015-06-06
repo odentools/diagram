@@ -1,4 +1,5 @@
 <?php
+
 include_once(dirname(__FILE__) ."/SQL_Config.php");
 
 class	SQL_Session{
@@ -120,6 +121,32 @@ class	SQL_Session{
 
 	/**
 	 * @fn
+	 * 便テーブルのレコードを削除する
+	 * @breaf 便テーブルのレコード削除する
+	 * @param ($id) 便テーブルのレコードID
+	 * @warning レコードの削除については必ず新規のメゾットで作成する事.
+	 * @return なし
+	 */
+	function	BBusDelete($id) {
+		
+		$table="Bus";
+		$type = "i";
+		$where = "diaId=?";
+
+		$query = "delete from ".$table." where ".$where;
+
+		$stmt = $this->mysqli->prepare($query);
+		
+		$stmt->bind_param($type, $id);
+
+		$stmt->execute();
+
+		$stmt->close();
+
+	}
+
+	/**
+	 * @fn
 	 * スケジュールテーブルのレコードを削除する
 	 * @breaf スケジュールテーブルのレコード削除する
 	 * @param ($id) スケジュールテーブルのレコードID(路線ID)
@@ -131,6 +158,32 @@ class	SQL_Session{
 		$table="ScheduleT";
 		$type = "i";
 		$where = "RouteListT_ID_=?";
+
+		$query = "delete from ".$table." where ".$where;
+
+		$stmt = $this->mysqli->prepare($query);
+		
+		$stmt->bind_param($type, $id);
+
+		$stmt->execute();
+
+		$stmt->close();
+
+	}
+	
+	/**
+	 * @fn
+	 * スケジュールテーブルのレコードを削除する
+	 * @breaf スケジュールテーブルのレコード削除する
+	 * @param ($id) スケジュールテーブルのレコードID(路線ID)
+	 * @warning レコードの削除については必ず新規のメゾットで作成する事.
+	 * @return なし
+	 */
+	function	BScheduleDelete($id) {
+		
+		$table="Schedule";
+		$type = "i";
+		$where = "routeId=?";
 
 		$query = "delete from ".$table." where ".$where;
 

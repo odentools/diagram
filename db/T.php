@@ -1,7 +1,10 @@
 <?php
 
+// 利用するBDをAPIのVERSIONから設定
+define('API_VERSION', "1.3");
+
 include_once(dirname(__FILE__) ."/../lib/lib.php");
-include_once(dirname(__FILE__) ."/../api/1.3/SQL_Session.php");
+include_once(dirname(__FILE__) ."/SQL_Session.php");
 
 $mysqli = new SQL_Session();
 
@@ -98,12 +101,12 @@ if ( isset($_GET['schedule']) ) {
 	$routeId = (int)$P_Data["routeId"];
 
 	// スケージュールテーブルから削除
-	$mysqli->BScheduleTDelete($routeId);
+	$mysqli->BScheduleDelete($routeId);
 
 	// BD Bindの為キャスト処理
 	foreach ( (array)$P_Data["postData"] as $key => $val ) {
 		foreach ( (array)$val as $key2 => $val2 ) {
-			if ( preg_match('/_ID_$/', $key2) )  {
+			if ( preg_match('/Id$/', $key2) || preg_match('/id$/', $key2) )  {
 				$P_Data["postData"][$key][$key2] = (int)$val2;
 			}
 		}
@@ -111,7 +114,7 @@ if ( isset($_GET['schedule']) ) {
 
 	foreach((array)$P_Data["postData"] as $key => $val) {
 
-		$mysqli->NewRecordAutoID("ScheduleT", $P_Parm["postData"], $val);
+		$mysqli->NewRecordAutoID("Schedule", $P_Parm["postData"], $val);
 
 	}
 

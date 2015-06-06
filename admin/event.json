@@ -1,5 +1,8 @@
 <?php
 
+	// 利用するBDをAPIのVERSIONから設定
+	define('API_VERSION', "1.3");
+
 	include_once (dirname(__FILE__) . "/../db/SQL_Session.php");
 	include_once (dirname(__FILE__) . "/../lib/lib.php");
 
@@ -23,17 +26,17 @@
 		$end = date('Y-m-d H:i:s', $days);
 		*/
 
-		$Select = "ScheduleT.RouteListT_ID_ ,DiaGroupT_ID_, TravelDate, DiaName";
+		$Select = "Schedule.routeId ,diaId, travelDate, diaName";
 	
 		$BPrm = array(0=>$P_Parm["id"]);
 
-		$result = $mysqli->BSelect("ScheduleT INNER JOIN DiaGroupT ON ScheduleT.DiaGroupT_ID_ = DiaGroupT.id", $Select, "ScheduleT.RouteListT_ID_=?", "s", $BPrm);
+		$result = $mysqli->BSelect("Schedule INNER JOIN Dia ON Schedule.diaId = Dia.id", $Select, "Schedule.routeId=?", "s", $BPrm);
 
 		$json = array();
 
 		foreach($result as $key => $val) {
-			$json[$key]['start'] = $val['TravelDate'];
-			$json[$key]['title'] = $val['DiaGroupT_ID_'].': '.$val['DiaName'];
+			$json[$key]['start'] = $val['travelDate'];
+			$json[$key]['title'] = $val['diaId'].': '.$val['diaName'];
 		}
 
 		// イベントデータを出力
