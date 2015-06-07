@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "nodemon server.js",
-    "test": "mocha --recursive --reporter spec"
+    "test": "mocha --reporter spec $(find test -name '*.t.js')"
   },
   "repository": {
     "type": "git",
