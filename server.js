@@ -29,8 +29,8 @@ app.use(express.static('public'));
 // Mount sub-app for API v2
 var appApiV2Routes = require("./server/api/2/routes"); // routes.js
 app.use('/api/2/routes', appApiV2Routes);
-var appApiV2Timetable = require("./server/api/2/timetable"); // routes.js
-app.use('/api/2/timetable', appApiV2Timetable);
+//var appApiV2Timetable = require("./server/api/2/timetable"); // routes.js
+//app.use('/api/2/timetable', appApiV2Timetable);
 
 // Launch server
 app.listen(3000);
