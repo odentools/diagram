@@ -31,7 +31,7 @@ app.filter('substring', function() {
 /**
 	時刻表ページ用コントローラ
 **/
-app.controller('TimetableCtrl', function($scope, $timeout, $window, Routes, Timetable, Helpers) {
+app.controller('TimetableCtrl', function($scope, $timeout, $window, $location, Routes, Timetable, Helpers) {
 	// 全便の配列
 	var allBuses = [];
 	// 将来便の配列
@@ -105,13 +105,20 @@ app.controller('TimetableCtrl', function($scope, $timeout, $window, Routes, Time
 
 	/* ---- */
 
-	// $scope.routeId を監視 (通常はng-initによってHTML読み込み時にセットされる)
-	$scope.$watch('routeId', function(new_value, old_value){
-		if (new_value != null) {
-			// 路線情報および時刻表の取得 (初期化処理)
-			$scope.fetchDiagrams($scope.routeId);
-		}
-	});
+	// 路線IDの設定
+	if ($location.search() != null && $location.search().route_id != undefined) {
+		// URLから路線IDを取得
+		$scope.routeId = $location.search().route_id;
+		$scope.fetchDiagrams($scope.routeId);
+	} else {
+		// $scope.routeId を監視 (通常はng-initによってHTML読み込み時にセットされる)
+		$scope.$watch('routeId', function(new_value, old_value){
+			if (new_value != null) {
+				// 路線情報および時刻表の取得 (初期化処理)
+				$scope.fetchDiagrams($scope.routeId);
+			}
+		});
+	}
 
 	// 更新タイマーを開始
 	var func_update = function() {
