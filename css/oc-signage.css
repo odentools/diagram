@@ -1,0 +1,53 @@
+html, body {
+	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-size: 50pt;
+	height: 100%;
+	margin: 0 0 0 0;
+	overflow: hidden;
+	width: 100%;
+}
+
+div.container {
+	display: box;
+		display: -webkit-box;
+		display: -moz-box;
+	box-orient: vertical;
+		-webkit-box-orient: vertical;
+		-moz-box-orient: vertical;
+	height: 100%;
+	min-height: 100%;
+	width: 100%;
+}
+
+header {
+	background-color: #fefefe;
+	font-size: 120%;
+	text-align: center;
+}
+
+iframe {
+	border: none;
+	width: 100%;
+	box-flex: 1;
+		-webkit-box-flex: 1;
+	display: box;
+		display: -moz-box;
+		display: -webkit-box;
+		display: -o-box;
+		display: -ms-box;
+	box-orient: vertical;
+		-moz-box-orient: vertical;
+		-webkit-box-orient: vertical;
+		-o-box-orient: vertical;
+		-ms-box-orient: vertical;
+}
+
+footer {
+	background-color: #fefefe;
+	color: #444444;
+	font-size: 60%;
+	padding: 0 1rem 0 1rem;
+	box-sizing: border-box;
+	white-space: nowrap;
+	text-align: center;
+}
