@@ -1,0 +1,62 @@
+<?php
+/****************************************************
+ * ダイアWeb API
+ * Diaを扱います
+ * レスポンス JSON
+ ****************************************************/
+
+	// 利用するBDをAPIのVERSIONから設定
+	define('API_VERSION', "1.3.1");
+
+	include_once(dirname(__FILE__) ."/../../db/SQL_Session.php");
+	include_once (dirname(__FILE__) ."/../../db/json.php");
+	include_once (dirname(__FILE__) ."/../../lib/lib.php");
+
+	$json	= new JSON();
+	$mysqli	= new SQL_Session();
+	
+	// ISO8601の生成
+	$Date = ", CONCAT(travelDate, 'T', departureTime, '+09:00') as departureDate, CONCAT(travelDate, 'T', arrivalTime, '+09:00') as arrivalDate";
+
+	// 不要なデータをフィルタリング
+	$Select = "departureTime, arrivalTime, note, diaName".$Date;
+
+	// 開発要求の場合は全てを返す。
+	if(isset($_GET["develop"])) {
+
+		$Select = "*".$Date;
+
+	}
+		
+	// 条件の設定
+	if ( isset($_GET["route_id"]) && isset($_GET["date"])) {
+		
+		$BPrm = array( 0 => (int)$_GET["route_id"], 1 => $_GET["date"] );
+		$where = "Schedule.routeId = ? AND Schedule.travelDate = ?";
+		$type = "is";
+		
+	} else if ( isset($_GET["route_id"]) ) {
+
+		$BPrm = array( 0 => (int)$_GET["route_id"] );
+		$where = "Schedule.routeId = ?";
+		$type = "i";
+
+	} else if ( isset($_GET["date"]) ) {
+
+		$BPrm = array( 0 => $_GET["date"] );
+		$where = "Schedule.travelDate = ?";
+		$type = "s";
+
+	} else {
+		
+		$where = "TRUE";
+		$type = null;
+		
+	}
+
+	$json->PushResult(
+		$mysqli->BSelect("Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id", $Select, $where, $type, $BPrm)
+	,"Dia");
+
+
+?>

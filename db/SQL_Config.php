@@ -20,6 +20,7 @@
 
 		// 本番用
 		case '1.3':
+		case '1.3.1':
 			define('SQL_SERVER_DB', "timeTable");
 			break;
 
