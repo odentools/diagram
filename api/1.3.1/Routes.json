@@ -1,0 +1,47 @@
+<?php
+/****************************************************
+ * 路線テーブルWeb API
+ * Routeを扱います
+ * レスポンス JSON
+ ****************************************************/
+
+	// 利用するBDをAPIのVERSIONから設定
+	define('API_VERSION', "1.3.1");
+
+	include_once(dirname(__FILE__) ."/../../db/SQL_Session.php");
+	include_once(dirname(__FILE__) ."/../../db/json.php");
+	include_once(dirname(__FILE__) ."/../../lib/lib.php");
+
+	$json = new JSON();
+
+	$mysqli = new SQL_Session();
+
+	// 不要なデータをフィルタリング
+	// $Select = "id, routePrefix, routeName, management, departureLocation, arrivalLocation, departureLocationLat, departureLocationLng, arrivalLocationLat, arrivalLocationLng"
+	$Select = "*, (Select count(*) from Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id where Schedule.routeId = Route.id AND Schedule.travelDate =  DATE_FORMAT(now(),'%Y/%m/%d'))as numOfBusesOnDay";
+
+	// 開発要求の場合は全てを返す。
+	if(isset($_GET["develop"])) {
+
+		$Select = "*, (Select count(*) from Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id where Schedule.routeId = Route.id AND Schedule.travelDate =  DATE_FORMAT(now(),'%Y/%m/%d'))as numOfBusesOnDay";
+
+	}
+
+	$G_Parm = array('id' => NULL);
+	if(CheckGetParameter($G_Parm)) {
+
+		$BPrm = array(0=>$_GET["id"]);
+
+		$result = $mysqli->BSelect("Route", $Select, "id=?", "s", $BPrm);
+
+		$json->PushResult($result, 'Route');
+
+	} else {
+
+		$result = $mysqli->BSelect("Route", $Select);
+
+		$json->PushResult($result, 'Route');
+
+	}
+
+?>
