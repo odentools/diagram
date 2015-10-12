@@ -18,12 +18,12 @@
 
 	// 不要なデータをフィルタリング
 	// $Select = "id, routePrefix, routeName, management, departureLocation, arrivalLocation, departureLocationLat, departureLocationLng, arrivalLocationLat, arrivalLocationLng"
-	$Select = "*, (Select count(*) from Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id where Schedule.routeId = Route.id AND Schedule.travelDate =  DATE_FORMAT(now(),'%Y/%m/%d'))as serviceNumberForToday";
+	$Select = "*, (Select count(*) from Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id where Schedule.routeId = Route.id AND Schedule.travelDate =  DATE_FORMAT(now(),'%Y/%m/%d'))as numOfBusesOnDay";
 
 	// 開発要求の場合は全てを返す。
 	if(isset($_GET["develop"])) {
 
-		$Select = "*, (Select count(*) from Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id where Schedule.routeId = Route.id AND Schedule.travelDate =  DATE_FORMAT(now(),'%Y/%m/%d'))as serviceNumberForToday";
+		$Select = "*, (Select count(*) from Schedule INNER JOIN Bus ON Schedule.diaId = Bus.diaId INNER JOIN Dia ON Schedule.diaId = Dia.id where Schedule.routeId = Route.id AND Schedule.travelDate =  DATE_FORMAT(now(),'%Y/%m/%d'))as numOfBusesOnDay";
 
 	}
 
