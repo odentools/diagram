@@ -127,6 +127,7 @@ jQuery(document).ready(function()
 	// キャンバスのイベントリスナー (マウス移動)
 	canvas.addEventListener('mousemove', function(e){
 
+		var expansion = parseFloat(document.diagram.expansion.value);
 		var rect = e.target.getBoundingClientRect();
 
 		// ダイア線の追従
@@ -153,7 +154,7 @@ jQuery(document).ready(function()
 				scrollOldXPoint = XPoint;
 			}
 
-			document.diagram.offset.value = parseInt(document.diagram.offset.value) + scrollOldXPoint - XPoint;
+			document.diagram.offset.value = parseInt(document.diagram.offset.value) + (scrollOldXPoint - XPoint) / expansion;
 
 			repaint();
 
