@@ -5,6 +5,8 @@
  * レスポンス JSON
  ****************************************************/
 
+	ini_set('display_errors', 1);
+
 	// 利用するBDをAPIのVERSIONから設定
 	define('API_VERSION', "1.3");
 

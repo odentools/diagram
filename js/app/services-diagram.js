@@ -9,7 +9,7 @@ services.factory('Constants', [function() {
 	var service = {
 		// WebAPIのベースURLを返す
 		getAPIEndpoint: function() {
-			return 'http://oecu.pw/api/1.3.1/';
+			return window.location.protocol + '//' + window.location.host + '/api/1.3.1/';
 		}
 	};
 	return service;

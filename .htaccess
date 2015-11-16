@@ -1,6 +1,11 @@
+<FilesMatch "\.json$">
+  AddHandler php5-script .json
+</FilesMatch>
+
 <Files ~ "^\.(htaccess|htpasswd)$">
-deny from all
+	deny from all
 </Files>
+
 Options -Indexes
 DirectoryIndex index.php index.html
 order deny,allow
