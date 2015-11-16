@@ -2,8 +2,8 @@
 
 	/* ON:TURE, OFF:FALSE */
 
-	//デバッグ機能 
-	@define('DEBUG', FALSE);
+	//デバッグ機能
+	@define('DEBUG', TRUE);
 
 	if(DEBUG) {
 		ini_set( 'display_errors', 1);

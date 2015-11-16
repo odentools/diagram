@@ -18,25 +18,27 @@ class	SQL_Session{
 
 		if($serverParam == null) {
 
-			$domain = SQL_SERVER_ADDRESS;
+			$host = SQL_SERVER_HOST;
+			$port = SQL_SERVER_PORT;
 			$user = SQL_SERVER_USER;
 			$pass = SQL_SERVER_PASSWORD;
 			$db = SQL_SERVER_DB;
 
 		}else{
 
-			$domain = $serverParam['domain'];
+			$host = $serverParam['host'] || 'localhost';
+			$port = $serverParam['port'] || 3306;
 			$user = $serverParam['user'];
 			$pass = $serverParam['pass'];
 			$db = $serverParam['db'];
 
 		}
 
-		$this->mysqli = new mysqli($domain, $user, $pass, $db);
+		$this->mysqli = new mysqli($host, $user, $pass, $db, $port);
 
 		if (mysqli_connect_errno()) {
-		    if(DEBUG) printf("Connect failed: %s\n", mysqli_connect_error());
-		    exit();
+			if(DEBUG) printf("Connect failed: %s\n", mysqli_connect_error());
+			exit();
 		}
 
 	}
@@ -62,7 +64,7 @@ class	SQL_Session{
 	function	BSelect($table, $Select = '*', $where = null, $type = null, $BPrm = null) {
 
 		$where == null ? $where = "":$where = " where ".$where;
-		
+
 		$BPrm  == null ? $BPrm = array():$BPrm;
 
 		$stmt = $this->mysqli->prepare("select ".$Select." from ".$table.$where);
@@ -88,7 +90,7 @@ class	SQL_Session{
 		$result = $this->fetch_all($stmt);
 
 		$stmt->close();
-	
+
 		return $result;
 
 	}
@@ -102,7 +104,7 @@ class	SQL_Session{
 	 * @return なし
 	 */
 	function	BDiaTDelete($id) {
-		
+
 		$table="DiaT";
 		$type = "i";
 		$where = "DiaGroupT_ID_=?";
@@ -110,7 +112,7 @@ class	SQL_Session{
 		$query = "delete from ".$table." where ".$where;
 
 		$stmt = $this->mysqli->prepare($query);
-		
+
 		$stmt->bind_param($type, $id);
 
 		$stmt->execute();
@@ -128,7 +130,7 @@ class	SQL_Session{
 	 * @return なし
 	 */
 	function	BBusDelete($id) {
-		
+
 		$table="Bus";
 		$type = "i";
 		$where = "diaId=?";
@@ -136,7 +138,7 @@ class	SQL_Session{
 		$query = "delete from ".$table." where ".$where;
 
 		$stmt = $this->mysqli->prepare($query);
-		
+
 		$stmt->bind_param($type, $id);
 
 		$stmt->execute();
@@ -154,7 +156,7 @@ class	SQL_Session{
 	 * @return なし
 	 */
 	function	BScheduleTDelete($id) {
-		
+
 		$table="ScheduleT";
 		$type = "i";
 		$where = "RouteListT_ID_=?";
@@ -162,7 +164,7 @@ class	SQL_Session{
 		$query = "delete from ".$table." where ".$where;
 
 		$stmt = $this->mysqli->prepare($query);
-		
+
 		$stmt->bind_param($type, $id);
 
 		$stmt->execute();
@@ -170,7 +172,7 @@ class	SQL_Session{
 		$stmt->close();
 
 	}
-	
+
 	/**
 	 * @fn
 	 * スケジュールテーブルのレコードを削除する
@@ -180,7 +182,7 @@ class	SQL_Session{
 	 * @return なし
 	 */
 	function	BScheduleDelete($id) {
-		
+
 		$table="Schedule";
 		$type = "i";
 		$where = "routeId=?";
@@ -188,7 +190,7 @@ class	SQL_Session{
 		$query = "delete from ".$table." where ".$where;
 
 		$stmt = $this->mysqli->prepare($query);
-		
+
 		$stmt->bind_param($type, $id);
 
 		$stmt->execute();
@@ -219,7 +221,7 @@ class	SQL_Session{
 
 		while ($stmt->fetch()) {
 			$c = array();
-			
+
 			foreach($row as $key => $val) {
 				$c[$key] = $val;
 			}
@@ -240,9 +242,9 @@ class	SQL_Session{
 	 * @return レコード
 	 */
 	function	GetRecord($query) {
-		
+
 		$row = null;
-		
+
 		$result = $this->mysqli->query($query);
 
 		while($rec = $result->fetch_assoc()){
@@ -254,7 +256,7 @@ class	SQL_Session{
 		return $row;
 
 	}
-	
+
 	/**
 	 * @fn
 	 * テーブルのカラム名を取得する
@@ -263,9 +265,9 @@ class	SQL_Session{
 	 * @return カラム名
 	 */
 	function	GetColumn($table) {
-		
+
 		$query = "SHOW FIELDS FROM ".$table;
-		
+
 		$result = $this->mysqli->query($query);
 
 		while($row[] = $result->fetch_assoc());
@@ -283,7 +285,7 @@ class	SQL_Session{
 		return $Field;
 
 	}
-	
+
 	/**
 	 * @fn
 	 * テーブル中からIDの最大値を取得する
@@ -292,13 +294,13 @@ class	SQL_Session{
 	 * @return 最大値
 	 */
 	function	GetMaxId($table) {
-		
+
 		$query = "select MAX(id) from ".$table;
-		
+
 		$result = $this->GetRecord($query);
-		
+
 		return (int)$result[0]["MAX(id)"];
-		
+
 	}
 
 	/**
@@ -363,13 +365,13 @@ class	SQL_Session{
 		unset($BPrm["id"]);
 
 		$query = "UPDATE ".$table." SET ";
-		
+
 		foreach($BPrm as $key=>$val) {
 
 			$query = $query." ".$key."=?,";
 
 		}
-		
+
 		// 最後の「,」を削除
 		$query = substr($query, 0, -1);
 
@@ -386,7 +388,7 @@ class	SQL_Session{
 		foreach ($BPrm as $k=>$v){
 			$stmtParams[] = &$BPrm[$k];
 		}
-		
+
 		$stmtParams[] = &$id;
 
 		if(DEBUG) {echo "\nstmtParams ： ";var_dump($stmtParams);}
@@ -401,7 +403,7 @@ class	SQL_Session{
 		$stmt->close();
 
 	}
-	
+
 	/**
 	 * @fn
 	 * IDを自動指定し、新規レコードの追加を行う
@@ -420,7 +422,7 @@ class	SQL_Session{
 		$type = 'i'.$type;
 
 		$this->NewRecord($table, $type, $recParams);
-		
+
 		return $id;
 
 	}
