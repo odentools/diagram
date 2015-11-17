@@ -13,8 +13,8 @@
 		define('SQL_SERVER_HOST', 'localhost');
 		define('SQL_SERVER_PORT', 3306);
 		define('SQL_SERVER_USER', 'timetable');
-		define('SQL_SERVER_PASSWORD', NULL);
-		define('SQL_SERVER_DB', 'timetable');
+		define('SQL_SERVER_PASSWORD', 'aB12cD34');
+		define('SQL_SERVER_DB', 'timeTable');
 	}
 
 	function ParseDsn($dsn) {
