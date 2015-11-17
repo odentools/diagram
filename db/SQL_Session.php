@@ -37,7 +37,7 @@ class	SQL_Session{
 		$this->mysqli = new mysqli($host, $user, $pass, $db, $port);
 
 		if (mysqli_connect_errno()) {
-			if(DEBUG) printf("Connect failed: %s\n", mysqli_connect_error());
+			if (DEBUG) printf("Connect failed: %s\n", mysqli_connect_error());
 			exit();
 		}
 

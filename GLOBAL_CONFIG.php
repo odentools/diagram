@@ -3,7 +3,7 @@
 	/* ON:TURE, OFF:FALSE */
 
 	//デバッグ機能
-	@define('DEBUG', TRUE);
+	@define('DEBUG', FALSE);
 
 	if(DEBUG) {
 		ini_set( 'display_errors', 1);
