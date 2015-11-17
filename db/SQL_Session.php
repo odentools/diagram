@@ -41,6 +41,8 @@ class	SQL_Session{
 			exit();
 		}
 
+		$this->mysqli->set_charset("utf8");
+
 	}
 
 	function	__destruct() {
