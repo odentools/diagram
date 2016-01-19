@@ -111,6 +111,9 @@ app.controller('TimetableCtrl', function($scope, $routeParams, $timeout, Routes,
 						$scope.updateBuses();
 						// 読み込み完了
 						$scope.isLoading = false;
+
+						ga('send', 'event', 'ui_action', 'view_route_buses', route_id);
+						
 					},
 					function(data, status){
 						$scope.isLoading = false;
