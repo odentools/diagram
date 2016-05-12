@@ -1,5 +1,4 @@
 AuthUserFile /var/www/.htpasswd
-AuthGroupFile /dev/null
 AuthName "Secret Area"
 AuthType Basic
 
