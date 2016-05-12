@@ -4,7 +4,7 @@ MAINTAINER Masanori Ohgita <mp@ohgita.info>
 # Install modules
 RUN apt-get update && apt-get install -y \
 	libmysql++-dev \
-	&& docker-php-ext-install mysqli
+	&& docker-php-ext-install mysqli mbstring
 
 # Copy the php.ini
 COPY config/php.ini /usr/local/etc/php/
