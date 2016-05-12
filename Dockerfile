@@ -12,4 +12,7 @@ COPY config/php.ini /usr/local/etc/php/
 # Copy a source code to the root directory
 COPY . /var/www/html/
 
+# Add the password for admin area
+RUN echo $ODEN_PW > /var/www/.htpasswd
+
 # Exposed in 80 port by php:5.6-apache
