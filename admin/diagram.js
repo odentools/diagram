@@ -1,4 +1,4 @@
-const SERVER_URL = "http://"+location.host+"/";
+const SERVER_URL = "//"+location.host+"/";
 const SERVER_APIURL = SERVER_URL+"api/1.3/";
 
 var selected;
