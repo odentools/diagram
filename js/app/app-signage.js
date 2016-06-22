@@ -42,6 +42,9 @@ app.controller('TimetableCtrl', function($scope, $timeout, $window, $location, R
 	$scope.route = null;
 	// 取得日時
 	$scope.fetchedAt = null;
+	// 稼働中フラグ (false または 初期化されなかった場合はメンテナンス表示となる)
+	$scope.isWorking = false;
+
 
 	// 路線情報および時刻表の取得
 	$scope.fetchDiagrams = function(route_id) {
@@ -64,6 +67,7 @@ app.controller('TimetableCtrl', function($scope, $timeout, $window, $location, R
 				Timetable.fetch(route_id, date, function(buses) {
 					allBuses = buses;
 					$scope.fetchedAt = date;
+					$scope.showHiddenElems();
 				}, function(data) {
 					allBuses = [];
 					$scope.fetchedAt = date;
@@ -100,6 +104,20 @@ app.controller('TimetableCtrl', function($scope, $timeout, $window, $location, R
 			$scope.nextBus = $scope.buses[0];
 		} else {
 			$scope.nextBus = null;
+		}
+	};
+
+	// 正常稼働時に表示されるべき要素を表示する
+	// (対象要素: メンテナンスモード時には非表示にされるべき要素)
+	$scope.showHiddenElems = function () {
+		$scope.isWorking = true;
+		var elems = document.getElementsByClassName('hide-in-maintenance');
+		for (var i = 0; i < elems.length; i++) {
+			if (elems[i].tagName == 'SPAN') {
+				elems[i].style.display = 'inline';
+			} else {
+				elems[i].style.display = 'block';
+			}
 		}
 	};
 

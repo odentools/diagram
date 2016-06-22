@@ -17,6 +17,7 @@ body {
 }
 
 header, footer {
+	background: #222;
 	padding: 0px;
 	margin: 0;
 }
@@ -24,7 +25,6 @@ header div, footer div {
 	padding: .7em 0px;
 	color: #fff;
 	text-align:center;
-	background: #222;
 	text-shadow: 0 -1px 0 #222;
 }
 
@@ -32,6 +32,36 @@ li {
 	list-style: none;
 	margin: 0;
 	display: block;
+}
+
+/* メンテナンス時に非表示とする要素 */
+.hide-in-maintenance {
+	display: none;
+}
+
+/* メンテナンス メッセージ */
+
+.message-maintenance {
+	width: 100%;
+	text-align: center;
+	font-size: 6.5rem;
+	letter-spacing: 2.0rem;
+}
+
+.message-maintenance p {
+	position: absolute;
+	top: 40%;
+	transform: translateY(-50%);
+		-webkit-transform: translateY(-50%);
+		-ms-transform: translateY(-50%);
+	width: 100%;
+}
+
+.message-maintenance p small {
+	font-size: 4.0rem;
+	font-weight: lighter;
+	font-style: italic;
+	letter-spacing: 0.7rem;
 }
 
 /* メッセージ */
