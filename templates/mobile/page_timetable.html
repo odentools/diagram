@@ -21,7 +21,7 @@
 <ul class="timetable">
 	<li class="card" ng-repeat="item in buses">
 		<span class="dep-time">{{item.departureDate | date:'HH:mm'}}</span>
-		<span class="dep-loc" style="font-size:small">{{route.departureLocation}} 発</span>
+		<span class="dep-loc" style="font-size:smaller">{{route.departureLocation}} 発</span>
 		<span class="arr-loc">{{route.arrivalLocation}} 行</span>
 		<span class="note">{{item.note | substring:0:1}}</span>
 	</li>
