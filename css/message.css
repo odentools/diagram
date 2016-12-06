@@ -1,0 +1,32 @@
+stsmall{
+  font-size: xx-small
+}
+
+resmall{
+  font-size: x-small
+}
+
+small{
+  font-size: small
+}
+
+medium{
+  font-size: medium
+}
+
+large{
+  font-size: large
+}
+
+relarge{
+  font-size: x-large
+}
+
+stlarge{
+  font-size: xx-large
+}
+
+/*
+※略語について
+"re"と"st"はそれぞれ"more"と"most"を略したものである。
+ */
