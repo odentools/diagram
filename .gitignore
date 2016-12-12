@@ -1,0 +1,2 @@
+# このファイルと同じディレクトリにあるnpm-debug.logを除外
+/npm-debug.log
