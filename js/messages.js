@@ -4,7 +4,7 @@ var elem = document.getElementById("msg");
 
 var end = new Array();
 
-end[0] = '本日の営業は終了しました<br>［タクシー］<br>星田交通 072-891-1160(7時～25時)';
+end[0] = '本日の営業は終了しました<br>［タクシー］<br>なみはやタクシー 072-824-7507';
 end[1] = 'このバス時刻表システムは、OdenToolsが運営しています。<br>OdenToolsは総合情報学部情報学科の学生プロジェクトです。';
 /*
 end[2] = '';
