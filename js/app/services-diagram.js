@@ -118,6 +118,8 @@ services.factory('Routes', ['$http', 'Constants', function($http, Constants) {
 				return "#599900";
 			} else if (route.management == "近鉄バス") {
 				return "#ffff00";
+			} else if (route.management == "京阪バス") {
+				return "#ff0000";
 			}
 			return "#eeeeee";
 		}
