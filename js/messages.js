@@ -4,8 +4,8 @@ var elem = document.getElementById("msg");
 
 var end = new Array();
 
-end[0] = '本日の営業は終了しました<br>［タクシー］<br>なみはやタクシー 072-824-7507';
-end[1] = 'このバス時刻表システムは、OdenToolsが運営しています。<br>OdenToolsは総合情報学部情報学科の学生プロジェクトです。';
+end[0] = '<span style="font-size:large">本日の営業は終了しました</span><br>［タクシー］<br>なみはやタクシー 072-824-7507<br><br><b>本システムはOdenToolsが運営しています。</b>';
+end[1] = '<span style="font-size:large">本日の営業は終了しました</span><br>［タクシー］<br>なみはやタクシー 072-824-7507<br><br><b>OdenToolsは情報学科の学生による自由なプロジェクトです。</b>';
 /*
 end[2] = '';
 end[3] = '';
